@@ -1,4 +1,3 @@
-import javax.xml.crypto.Data;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -8,6 +7,9 @@ import java.net.InetAddress;
 
 public class Client {
 
+    private static final String COMMAND_NAME = "@name";
+    private static final String LOGIN_MESSAGE = " has logged in.";
+    private static final String LOGOUT_MESSAGE = " has logged out.";
     private static String currentUsername = " ";
 
     public static void main(String[] args) {
@@ -39,25 +41,17 @@ public class Client {
             receiveThread.start();
 
             while (true) {
-                System.out.println("Enter a message (or type '@quit' to exit) ");
+                System.out.println("Enter a message (or type '@quit' to exit): ");
                 String message = userInput.readLine();
 
                 if ("@quit".equals(message)) {
                     System.out.println("Exiting chat.");
                     sendQuitNotification(socket, serverHost, serverPort);
                     break;
-                } else if (message.startsWith("@name")) {
-                    currentUsername = message.substring(6).trim();
-                    byte[] newNameCommandData = message.getBytes();
-                    DatagramPacket newNameCommandPacket = new DatagramPacket(newNameCommandData, newNameCommandData.length,
-                            serverAddress, serverPort);
-                    socket.send(newNameCommandPacket);
+                } else if (message.startsWith(COMMAND_NAME)) {
+                    handleNameChange(socket, serverAddress, serverPort, message);
                 } else {
-                    String messageWithUsername = currentUsername + ": " + message;
-                    byte[] sendData = messageWithUsername.getBytes();
-                    DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length,
-                            serverAddress, serverPort);
-                    socket.send(sendPacket);
+                    sendMessage(socket, serverAddress, serverPort, message);
                 }
             }
             socket.close();
@@ -66,7 +60,7 @@ public class Client {
         }
     }
     private static void sendLoginNotification(DatagramSocket socket, String serverHost, int serverPort) throws IOException {
-        String loginMessage = currentUsername + " has logged in.";
+        String loginMessage = currentUsername + LOGIN_MESSAGE;
         byte[] loginData = loginMessage.getBytes();
         DatagramPacket loginPacket = new DatagramPacket(loginData, loginData.length,
                 InetAddress.getByName(serverHost), serverPort);
@@ -74,11 +68,27 @@ public class Client {
     }
 
     private static void sendQuitNotification(DatagramSocket socket, String serverHost, int serverPort) throws IOException {
-        String quitMessage = currentUsername + " has logged out.";
+        String quitMessage = currentUsername + LOGOUT_MESSAGE;
         byte[] loginData = quitMessage.getBytes();
         DatagramPacket loginPacket = new DatagramPacket(loginData, loginData.length,
                 InetAddress.getByName(serverHost), serverPort);
         socket.send(loginPacket);
+    }
+
+
+    private static void handleNameChange(DatagramSocket socket, InetAddress serverAddress, int serverPort, String message) throws IOException {
+        currentUsername = message.substring(COMMAND_NAME.length()).trim();
+        System.out.println("Your new name is: " + currentUsername);
+        sendMessage(socket, serverAddress, serverPort, message);
+    }
+
+    private static void sendMessage(DatagramSocket socket, InetAddress serverAddress, int serverPort, String message) throws IOException {
+        if (!message.isEmpty()) {
+            String messageWithUsername = currentUsername + ": " + message;
+            byte[] sendData = messageWithUsername.getBytes();
+            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, serverAddress, serverPort);
+            socket.send(sendPacket);
+        }
     }
 
     static class MessageReceiver implements Runnable {

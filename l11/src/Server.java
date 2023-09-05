@@ -4,6 +4,8 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 
 public class Server {
+
+    private static final String COMMAND_NAME = "@name";
     public static void main(String[] args) {
         if (args.length != 1){
             System.out.println("Usage : java Server <port>");
@@ -49,15 +51,21 @@ public class Server {
 
         @Override
         public void run() {
-            if (message.startsWith("@name")){
-                String[] parts = message.split(" ");
-                if (parts.length >= 2){
-                    String newUserName = parts[1];
-                    System.out.println("[" + clientAddress + ":" + clientPort + "]" + " - User set name to " + newUserName);
-                }
+            if (message.startsWith(COMMAND_NAME)){
+                handleNameChange();
             } else {
-                System.out.println("[" + clientAddress + ":" + clientPort + "]" + " - " + message);
+                handleRegularMessage();
             }
+        }
+        private void handleNameChange(){
+            String[] parts = message.split(" ");
+            if (parts.length >= 2){
+                String newUserName = parts[1];
+                System.out.println("[" + clientAddress + ":" + clientPort + "]" + " - User set name to " + newUserName);
+            }
+        }
+        private void handleRegularMessage(){
+            System.out.println("[" + clientAddress + ":" + clientPort + "]" + " - " + message);
         }
     }
 }
