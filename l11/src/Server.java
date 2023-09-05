@@ -53,10 +53,10 @@ public class Server {
                 String[] parts = message.split(" ");
                 if (parts.length >= 2){
                     String newUserName = parts[1];
-                    System.out.println(clientAddress + ":" + clientPort + " - User set name to " + newUserName);
+                    System.out.println("[" + clientAddress + ":" + clientPort + "]" + " - User set name to " + newUserName);
                 }
             } else {
-                System.out.println(clientAddress + ":" + clientPort + " - " + message);
+                System.out.println("[" + clientAddress + ":" + clientPort + "]" + " - " + message);
             }
         }
     }
