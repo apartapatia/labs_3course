@@ -29,7 +29,7 @@ public class Server {
                 InetAddress clientAddress = receivePacket.getAddress();
                 int clientPort = receivePacket.getPort();
 
-                Thread messageHandlerThread = new Thread(new MessageHandler(socket, message, clientAddress, clientPort));
+                Thread messageHandlerThread = new Thread(new MessageHandler(message, clientAddress, clientPort));
                 messageHandlerThread.start();
             }
         } catch (IOException e){
@@ -37,13 +37,11 @@ public class Server {
         }
     }
     static class MessageHandler implements Runnable{
-        private final DatagramSocket socket;
         private final String message;
         private final InetAddress clientAddress;
         private final int clientPort;
 
-        public MessageHandler(DatagramSocket socket, String message, InetAddress clientAddress, int clientPort){
-            this.socket = socket;
+        public MessageHandler(String message, InetAddress clientAddress, int clientPort){
             this.message = message;
             this.clientPort = clientPort;
             this.clientAddress = clientAddress;
