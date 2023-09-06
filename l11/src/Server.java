@@ -37,10 +37,10 @@ public class Server {
         }
     }
     static class MessageHandler implements Runnable{
-        private DatagramSocket socket;
-        private String message;
-        private InetAddress clientAddress;
-        private int clientPort;
+        private final DatagramSocket socket;
+        private final String message;
+        private final InetAddress clientAddress;
+        private final int clientPort;
 
         public MessageHandler(DatagramSocket socket, String message, InetAddress clientAddress, int clientPort){
             this.socket = socket;

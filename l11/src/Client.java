@@ -26,22 +26,20 @@ public class Client {
             DatagramSocket socket = new DatagramSocket();
             BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
 
-            System.out.println("Enter your name: ");
+            System.out.print("Enter your name: ");
             currentUsername = userInput.readLine();
 
             sendLoginNotification(socket, serverHost, serverPort);
 
-            byte[] nameCommandData = ("@name" + currentUsername).getBytes();
             InetAddress serverAddress = InetAddress.getByName(serverHost);
-            DatagramPacket nameCommandPacket = new DatagramPacket(nameCommandData, nameCommandData.length,
-                    serverAddress, serverPort);
-            socket.send(nameCommandPacket);
 
             Thread receiveThread = new Thread(new MessageReceiver(socket));
+            System.out.println("type '@name' to change a name");
+            System.out.println("type '@quit' to exit");
             receiveThread.start();
 
             while (true) {
-                System.out.println("Enter a message (or type '@quit' to exit): ");
+                System.out.print("Enter a message: ");
                 String message = userInput.readLine();
 
                 if ("@quit".equals(message)) {
@@ -54,11 +52,11 @@ public class Client {
                     sendMessage(socket, serverAddress, serverPort, message);
                 }
             }
-            socket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
     private static void sendLoginNotification(DatagramSocket socket, String serverHost, int serverPort) throws IOException {
         String loginMessage = currentUsername + LOGIN_MESSAGE;
         byte[] loginData = loginMessage.getBytes();
@@ -79,20 +77,25 @@ public class Client {
     private static void handleNameChange(DatagramSocket socket, InetAddress serverAddress, int serverPort, String message) throws IOException {
         currentUsername = message.substring(COMMAND_NAME.length()).trim();
         System.out.println("Your new name is: " + currentUsername);
-        sendMessage(socket, serverAddress, serverPort, message);
+        String messageNewUsername = "@name " + currentUsername;
+        byte[] sendData = messageNewUsername.getBytes();
+        DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length,
+                serverAddress, serverPort);
+        socket.send(sendPacket);
     }
 
     private static void sendMessage(DatagramSocket socket, InetAddress serverAddress, int serverPort, String message) throws IOException {
         if (!message.isEmpty()) {
             String messageWithUsername = currentUsername + ": " + message;
             byte[] sendData = messageWithUsername.getBytes();
-            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, serverAddress, serverPort);
+            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length,
+                    serverAddress, serverPort);
             socket.send(sendPacket);
         }
     }
 
     static class MessageReceiver implements Runnable {
-        private DatagramSocket socket;
+        private final DatagramSocket socket;
 
         public MessageReceiver(DatagramSocket socket) {
             this.socket = socket;
@@ -111,6 +114,10 @@ public class Client {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
+            } finally {
+                if (socket != null && !socket.isClosed()) {
+                    socket.close();
+                }
             }
         }
     }
