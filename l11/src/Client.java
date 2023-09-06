@@ -11,6 +11,7 @@ public class Client {
     private static final String LOGIN_MESSAGE = " has logged in.";
     private static final String LOGOUT_MESSAGE = " has logged out.";
     private static String currentUsername = " ";
+    private static boolean shouldExit = false;
 
     public static void main(String[] args) {
 
@@ -44,6 +45,7 @@ public class Client {
 
                 if ("@quit".equals(message)) {
                     System.out.println("Exiting chat.");
+                    shouldExit = true;
                     sendQuitNotification(socket, serverHost, serverPort);
                     break;
                 } else if (message.startsWith(COMMAND_NAME)) {
@@ -52,6 +54,10 @@ public class Client {
                     sendMessage(socket, serverAddress, serverPort, message);
                 }
             }
+            if (!socket.isClosed()) {
+                socket.close();
+            }
+            System.exit(0);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -104,7 +110,7 @@ public class Client {
         @Override
         public void run() {
             try {
-                while (true) {
+                while (!shouldExit) {
                     byte[] receiveData = new byte[1024];
                     DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
                     socket.receive(receivePacket);
@@ -114,10 +120,6 @@ public class Client {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
-            } finally {
-                if (socket != null && !socket.isClosed()) {
-                    socket.close();
-                }
             }
         }
     }
