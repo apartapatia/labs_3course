@@ -24,6 +24,8 @@ public class Client {
         int serverPort = Integer.parseInt(args[1]);
 
         try {
+            InetAddress serverAddress = InetAddress.getByName(serverHost);
+
             DatagramSocket socket = new DatagramSocket();
             BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
 
@@ -32,7 +34,6 @@ public class Client {
 
             sendLoginNotification(socket, serverHost, serverPort);
 
-            InetAddress serverAddress = InetAddress.getByName(serverHost);
 
             Thread receiveThread = new Thread(new MessageReceiver(socket));
             System.out.println("type '@name' to change a name");
