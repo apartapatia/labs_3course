@@ -1,127 +1,115 @@
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.Objects;
+import java.util.Scanner;
 
 public class Client {
 
-    private static final String COMMAND_NAME = "@name";
+    private final DatagramSocket datagramSocket;
+    private final InetAddress serverAddress;
+    private final int serverPort;
+    private byte[] buffer;
+    private String username = "client";
     private static final String LOGIN_MESSAGE = " has logged in.";
     private static final String LOGOUT_MESSAGE = " has logged out.";
-    private static String currentUsername = " ";
-    private static boolean shouldExit = false;
+
+    public Client(DatagramSocket datagramSocket, InetAddress serverAddress, int serverPort) {
+        this.datagramSocket = datagramSocket;
+        this.serverAddress = serverAddress;
+        this.serverPort = serverPort;
+    }
+
+    public void sendMessage(String message) throws IOException {
+        message = this.username + ": " + message;
+        buffer = message.getBytes();
+        DatagramPacket sendPacket = new DatagramPacket(buffer, buffer.length, serverAddress, this.serverPort);
+        datagramSocket.send(sendPacket);
+    }
+
+    public void receiveMessages() {
+        try {
+            while (true) {
+                buffer = new byte[1024];
+                DatagramPacket receivePacket = new DatagramPacket(buffer, buffer.length);
+                datagramSocket.receive(receivePacket);
+                String messageFromServer = new String(receivePacket.getData(), 0, receivePacket.getLength());
+                System.out.println(messageFromServer);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            datagramSocket.close();
+        }
+    }
+    public void sendLoginNotification() throws IOException {
+        String loginMessage = this.username + LOGIN_MESSAGE;
+        byte[] loginData = loginMessage.getBytes();
+        DatagramPacket loginPacket = new DatagramPacket(loginData, loginData.length, this.serverAddress, this.serverPort);
+        datagramSocket.send(loginPacket);
+    }
+
+    public void sendQuitNotification() throws IOException {
+        String quitMessage = this.username + LOGOUT_MESSAGE;
+        byte[] loginData = quitMessage.getBytes();
+        DatagramPacket loginPacket = new DatagramPacket(loginData, loginData.length, this.serverAddress, this.serverPort);
+        datagramSocket.send(loginPacket);
+    }
+    public void sendChangeUsernameNotification() throws IOException {
+        String usernameMessage = "client set name to - " + this.username;
+        byte[] loginData = usernameMessage.getBytes();
+        DatagramPacket loginPacket = new DatagramPacket(loginData, loginData.length, this.serverAddress, this.serverPort);
+        datagramSocket.send(loginPacket);
+    }
 
     public static void main(String[] args) {
-
         if (args.length != 2) {
-            System.out.println("Usage : java Client <server_host> <server_port>");
-            System.exit(1);
+            System.out.println("usage : java Client <host> <port>");
+            System.exit(-1);
         }
 
-        String serverHost = args[0];
-        int serverPort = Integer.parseInt(args[1]);
-
         try {
-            InetAddress serverAddress = InetAddress.getByName(serverHost);
+            DatagramSocket datagramSocket = new DatagramSocket();
+            InetAddress serverAddress = InetAddress.getByName(args[0]);
+            int serverPort = Integer.parseInt(args[1]);
+            Client client = new Client(datagramSocket, serverAddress, serverPort);
 
-            DatagramSocket socket = new DatagramSocket();
-            BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
+            client.sendLoginNotification();
 
-            System.out.print("Enter your name: ");
-            currentUsername = userInput.readLine();
-
-            sendLoginNotification(socket, serverHost, serverPort);
-
-
-            Thread receiveThread = new Thread(new MessageReceiver(socket));
+            //thread dlya polu4eniya
+            Thread receiveThread = new Thread(client::receiveMessages);
             System.out.println("type '@name' to change a name");
             System.out.println("type '@quit' to exit");
             receiveThread.start();
 
-            while (true) {
-                System.out.print("Enter a message: ");
-                String message = userInput.readLine();
 
-                if ("@quit".equals(message)) {
-                    System.out.println("Exiting chat.");
-                    shouldExit = true;
-                    sendQuitNotification(socket, serverHost, serverPort);
+            //thread dlya otpravki
+            Scanner scanner = new Scanner(System.in);
+            while (true) {
+                String messageToSend = scanner.nextLine();
+                if (messageToSend.startsWith("@name")) {
+                    if (messageToSend.split(" ").length == 1){
+                        System.out.println("name is empty, try again!");
+                    } else {
+                        client.username = messageToSend.split(" ")[1];
+                        client.sendChangeUsernameNotification();
+                    }
+                } else if (Objects.equals(messageToSend.split(" ")[0], "@quit")) {
+                    client.sendQuitNotification();
+                    System.out.println("exiting chat!");
                     break;
-                } else if (message.startsWith(COMMAND_NAME)) {
-                    handleNameChange(socket, serverAddress, serverPort, message);
                 } else {
-                    sendMessage(socket, serverAddress, serverPort, message);
+                    client.sendMessage(messageToSend);
                 }
-            }
-            if (!socket.isClosed()) {
-                socket.close();
+            } if (!datagramSocket.isClosed()){
+                datagramSocket.close();
             }
             System.exit(0);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
-    private static void sendLoginNotification(DatagramSocket socket, String serverHost, int serverPort) throws IOException {
-        String loginMessage = currentUsername + LOGIN_MESSAGE;
-        byte[] loginData = loginMessage.getBytes();
-        DatagramPacket loginPacket = new DatagramPacket(loginData, loginData.length,
-                InetAddress.getByName(serverHost), serverPort);
-        socket.send(loginPacket);
-    }
-
-    private static void sendQuitNotification(DatagramSocket socket, String serverHost, int serverPort) throws IOException {
-        String quitMessage = currentUsername + LOGOUT_MESSAGE;
-        byte[] loginData = quitMessage.getBytes();
-        DatagramPacket loginPacket = new DatagramPacket(loginData, loginData.length,
-                InetAddress.getByName(serverHost), serverPort);
-        socket.send(loginPacket);
-    }
-
-
-    private static void handleNameChange(DatagramSocket socket, InetAddress serverAddress, int serverPort, String message) throws IOException {
-        currentUsername = message.substring(COMMAND_NAME.length()).trim();
-        System.out.println("Your new name is: " + currentUsername);
-        String messageNewUsername = "@name " + currentUsername;
-        byte[] sendData = messageNewUsername.getBytes();
-        DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length,
-                serverAddress, serverPort);
-        socket.send(sendPacket);
-    }
-
-    private static void sendMessage(DatagramSocket socket, InetAddress serverAddress, int serverPort, String message) throws IOException {
-        if (!message.isEmpty()) {
-            String messageWithUsername = currentUsername + ": " + message;
-            byte[] sendData = messageWithUsername.getBytes();
-            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length,
-                    serverAddress, serverPort);
-            socket.send(sendPacket);
-        }
-    }
-
-    static class MessageReceiver implements Runnable {
-        private final DatagramSocket socket;
-
-        public MessageReceiver(DatagramSocket socket) {
-            this.socket = socket;
-        }
-
-        @Override
-        public void run() {
-            try {
-                while (!shouldExit) {
-                    byte[] receiveData = new byte[1024];
-                    DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
-                    socket.receive(receivePacket);
-
-                    String message = new String(receivePacket.getData(), 0, receivePacket.getLength());
-                    System.out.println(message);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        } catch (NumberFormatException | IOException e) {
+            System.out.println("error: " + e.getMessage());
+            System.out.println("invalid <port> arguments");
         }
     }
 }

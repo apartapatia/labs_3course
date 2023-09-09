@@ -2,68 +2,98 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.Objects;
+import java.util.Scanner;
 
 public class Server {
+    private final DatagramSocket datagramSocket;
+    private final byte[] buffer = new byte[256];
+    private InetAddress clientAddress;
+    private int clientPort;
+    private String username = "server";
 
-    private static final String COMMAND_NAME = "@name";
-    public static void main(String[] args) {
-        if (args.length != 1){
-            System.out.println("Usage : java Server <port>");
-            System.exit(1);
-        }
 
-        int port = Integer.parseInt(args[0]);
+    public Server(DatagramSocket datagramSocket) {
+        this.datagramSocket = datagramSocket;
+    }
 
+    public void receiveMessages() {
         try {
-            DatagramSocket socket = new DatagramSocket(port);
-            System.out.println("Server is running on port " + port);
+            while (true) {
+                DatagramPacket datagramPacket = new DatagramPacket(buffer, buffer.length);
+                datagramSocket.receive(datagramPacket);
+                this.clientAddress = datagramPacket.getAddress();
+                this.clientPort = datagramPacket.getPort();
 
-            while (true){
-                byte[] receiveData = new byte[1024];
-                DatagramPacket receivePacket = new DatagramPacket(receiveData,
-                        receiveData.length);
-                socket.receive(receivePacket);
-
-                String message = new String(receivePacket.getData(), 0,
-                        receivePacket.getLength());
-                InetAddress clientAddress = receivePacket.getAddress();
-                int clientPort = receivePacket.getPort();
-
-                Thread messageHandlerThread = new Thread(new MessageHandler(message, clientAddress, clientPort));
-                messageHandlerThread.start();
+                String messageFromClient = new String(datagramPacket.getData(), 0, datagramPacket.getLength());
+                System.out.println(messageFromClient);
             }
-        } catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    static class MessageHandler implements Runnable{
-        private final String message;
-        private final InetAddress clientAddress;
-        private final int clientPort;
 
-        public MessageHandler(String message, InetAddress clientAddress, int clientPort){
-            this.message = message;
-            this.clientPort = clientPort;
-            this.clientAddress = clientAddress;
+    public void sendMessage(String message) throws IOException {
+        message = this.username + ": " + message;
+        byte[] messageBytes = message.getBytes();
+        DatagramPacket sendPacket = new DatagramPacket(messageBytes, messageBytes.length, this.clientAddress, this.clientPort);
+        datagramSocket.send(sendPacket);
+    }
+
+    public void sendQuitNotification() throws IOException {
+        String quitMessage = "server has shutdown!";
+        byte[] messageBytes = quitMessage.getBytes();
+        DatagramPacket sendPacket = new DatagramPacket(messageBytes, messageBytes.length, this.clientAddress, this.clientPort);
+        datagramSocket.send(sendPacket);
+    }
+
+    public static void main(String[] args) {
+        if (args.length != 1) {
+            System.out.println("usage : java Server <port>");
+            System.exit(-1);
         }
 
-        @Override
-        public void run() {
-            if (message.startsWith(COMMAND_NAME)){
-                handleNameChange();
-            } else {
-                handleRegularMessage();
-            }
-        }
-        private void handleNameChange(){
-            String[] parts = message.split(" ");
-            if (parts.length >= 2){
-                String newUserName = parts[1];
-                System.out.println("[" + clientAddress + ":" + clientPort + "]" + " - User set name to " + newUserName);
-            }
-        }
-        private void handleRegularMessage(){
-            System.out.println("[" + clientAddress + ":" + clientPort + "]" + " - " + message);
+        try {
+            DatagramSocket datagramSocket = new DatagramSocket(Integer.parseInt(args[0]));
+            Server server = new Server(datagramSocket);
+            System.out.println("server is start on port " + Integer.parseInt(args[0]));
+
+
+            //thread dlya otpravki
+            Thread sendThread = new Thread(() -> {
+                Scanner scanner = new Scanner(System.in);
+                while (true) {
+                    String messageToClient = scanner.nextLine();
+                    try {
+                        if (messageToClient.startsWith("@name") ){
+                            if (messageToClient.split(" ").length == 1){
+                                System.out.println("name is empty, try again!");
+                            } else {
+                                server.username = messageToClient.split(" ")[1];
+                            }
+                        } else if (Objects.equals(messageToClient.split(" ")[0], "@quit")) {
+                            server.sendQuitNotification();
+                            System.out.println("server has shutdown");
+                            break;
+                        } else {
+                            server.sendMessage(messageToClient);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } if (!datagramSocket.isClosed()){
+                    datagramSocket.close();
+                } System.exit(0);
+            });
+
+            sendThread.start();
+
+
+            //thread dlya polu4eniya
+            server.receiveMessages();
+        } catch (NumberFormatException | IOException e) {
+            System.out.println("error: " + e.getMessage());
+            System.out.println("invalid <port> arguments");
         }
     }
 }
