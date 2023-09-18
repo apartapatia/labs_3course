@@ -60,7 +60,7 @@ public class Server {
             System.out.println("server is start on port " + Integer.parseInt(args[0]));
 
 
-            //thread dlya otpravki
+            //start thread to send messages
             Thread sendThread = new Thread(() -> {
                 Scanner scanner = new Scanner(System.in);
                 while (true) {
@@ -89,7 +89,7 @@ public class Server {
 
             sendThread.start();
 
-            //thread dlya polu4eniya
+            //start thread to receive messages
             server.receiveMessages();
         } catch (NumberFormatException | IOException e) {
             System.out.println("error: " + e.getMessage());

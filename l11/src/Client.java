@@ -77,14 +77,14 @@ public class Client {
 
             client.sendLoginNotification();
 
-            //thread dlya polu4eniya
+            //start thread to receive messages
             Thread receiveThread = new Thread(client::receiveMessages);
             System.out.println("type '@name' to change a name");
             System.out.println("type '@quit' to exit");
             receiveThread.start();
 
 
-            //thread dlya otpravki
+            //start thread to send messages
             Scanner scanner = new Scanner(System.in);
             while (true) {
                 String messageToSend = scanner.nextLine();
