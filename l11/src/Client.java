@@ -24,7 +24,7 @@ public class Client {
     public void sendMessage(String message) throws IOException {
         message = this.username + ": " + message;
         buffer = message.getBytes();
-        DatagramPacket sendPacket = new DatagramPacket(buffer, buffer.length, serverAddress, this.serverPort);
+        DatagramPacket sendPacket = new DatagramPacket(buffer, buffer.length, this.serverAddress, this.serverPort);
         datagramSocket.send(sendPacket);
     }
 

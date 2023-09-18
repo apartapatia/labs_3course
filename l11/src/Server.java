@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 public class Server {
     private final DatagramSocket datagramSocket;
-    private final byte[] buffer = new byte[256];
+    private byte[] buffer;
     private InetAddress clientAddress;
     private int clientPort;
     private String username = "server";
@@ -20,6 +20,7 @@ public class Server {
     public void receiveMessages() {
         try {
             while (true) {
+                this.buffer = new byte[1024];
                 DatagramPacket datagramPacket = new DatagramPacket(buffer, buffer.length);
                 datagramSocket.receive(datagramPacket);
                 this.clientAddress = datagramPacket.getAddress();
@@ -87,7 +88,6 @@ public class Server {
             });
 
             sendThread.start();
-
 
             //thread dlya polu4eniya
             server.receiveMessages();
