@@ -105,7 +105,7 @@ public class Client {
                     break;
                 } else if (Objects.equals(messageToSend.split(" ")[0], "@game")) {
                     client.sendMessage("@game");
-                    String digit = scanner.nextLine();
+                    String digit = scanner.nextLine().trim();
                     client.sendMessage(digit);
                 } else {
                     client.sendMessage(messageToSend);

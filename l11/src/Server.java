@@ -34,7 +34,7 @@ public class Server {
                 String messageFromClient = new String(datagramPacket.getData(), 0, datagramPacket.getLength());
 
                 if (Objects.equals((messageFromClient.split(" ")[1]), "@game")){
-                    System.out.println(secretNumber);
+                    sendMessage("game was started!");
                     gameStarted = true;
                 } else if (gameStarted){
                     processGuess(messageFromClient.split(" ")[1]);
@@ -63,22 +63,35 @@ public class Server {
 
     //@game methods
     public void processGuess(String guess) throws IOException {
+        int guessedNumber = minRange + (maxRange - minRange + 1) / 2;
+        System.out.println(guessedNumber + " this number to l? or to h?");
         try {
-            int guessedNumber = Integer.parseInt(guess);
             if (guessedNumber == secretNumber) {
                 sendMessage("Congratulations! You guessed the number.");
                 resetGame();
-            } else if (guessedNumber < secretNumber) {
-                sendMessage("Too low! Try a higher number.");
-            } else {
-                sendMessage("Too high! Try a lower number.");
+            } else if (guess.equals("h")) {
+                if (guessedNumber > secretNumber){
+                    sendMessage("yes");
+                    setMaxRange(guessedNumber - 1);
+                } else {
+                    sendMessage("no");
+                }
+            } else if (guess.equals("l")) {
+                if (guessedNumber < secretNumber){
+                    sendMessage("yes");
+                    setMinRange(guessedNumber + 1);
+                } else {
+                    sendMessage("no");
+                }
             }
         } catch (NumberFormatException e) {
             sendMessage("Invalid input. Please enter a valid number.");
         }
     }
     private void resetGame() throws IOException {
-        this.secretNumber = new Random().nextInt(100) + 1;
+        setMinRange(1);
+        setMaxRange(100);
+        this.secretNumber = new Random().nextInt(getMaxRange()) + getMinRange();
         this.gameStarted = false;
         sendMessage("Game has been reset. Type '@game' to begin a new game.");
     }
