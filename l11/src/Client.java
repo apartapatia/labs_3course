@@ -90,7 +90,7 @@ public class Client {
             while (true) {
                 String messageToSend = scanner.nextLine().trim();
                 if (messageToSend.isEmpty()) {
-                    System.out.println("Message cannot be empty, please enter a message:");
+                    System.out.println("message cannot be empty, please enter a message:");
                     continue;
                 }
                 if (messageToSend.startsWith("@name")) {

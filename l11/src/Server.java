@@ -68,7 +68,7 @@ public class Server {
         System.out.println(guessedNumber + " this number to l? or to h?");
         try {
             if (guessedNumber == secretNumber) {
-                sendMessage("Congratulations! You guessed the number.");
+                sendMessage("congratulations! You guessed the number.");
                 resetGame();
             } else if (guess.equals("h")) {
                 if (guessedNumber > secretNumber){
@@ -85,7 +85,7 @@ public class Server {
                     sendMessage("no");
                 }
             } else {
-                sendMessage("Invalid input. Please enter 'h' for too high or 'l' for too low.");
+                sendMessage("invalid input. Please enter 'h' for too high or 'l' for too low.");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -96,7 +96,7 @@ public class Server {
         setMaxRange(100);
         this.secretNumber = new Random().nextInt(getMaxRange()) + getMinRange();
         this.gameStarted = false;
-        sendMessage("Game has been reset. Type '@game' to begin a new game.");
+        sendMessage("game has been reset. Type '@game' to begin a new game.");
     }
 
     public static void main(String[] args) {
@@ -118,7 +118,7 @@ public class Server {
                     String messageToClient = scanner.nextLine().trim();
 
                     if (messageToClient.isEmpty()) {
-                        System.out.println("Message cannot be empty, please enter a message:");
+                        System.out.println("message cannot be empty, please enter a message:");
                         continue;
                     }
                     try {
