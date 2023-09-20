@@ -3,6 +3,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.Objects;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Server {
@@ -11,10 +12,14 @@ public class Server {
     private InetAddress clientAddress;
     private int clientPort;
     private String username = "server";
-
+    private int secretNumber;
+    private boolean gameStarted = false;
+    private int minRange = 1;
+    private int maxRange = 100;
 
     public Server(DatagramSocket datagramSocket) {
         this.datagramSocket = datagramSocket;
+        this.secretNumber = new Random().nextInt(maxRange) + minRange;
     }
 
     public void receiveMessages() {
@@ -27,7 +32,15 @@ public class Server {
                 this.clientPort = datagramPacket.getPort();
 
                 String messageFromClient = new String(datagramPacket.getData(), 0, datagramPacket.getLength());
-                System.out.println(messageFromClient);
+
+                if (Objects.equals((messageFromClient.split(" ")[1]), "@game")){
+                    System.out.println(secretNumber);
+                    gameStarted = true;
+                } else if (gameStarted){
+                    processGuess(messageFromClient.split(" ")[1]);
+                } else {
+                    System.out.println(messageFromClient);
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -48,6 +61,28 @@ public class Server {
         datagramSocket.send(sendPacket);
     }
 
+    //@game methods
+    public void processGuess(String guess) throws IOException {
+        try {
+            int guessedNumber = Integer.parseInt(guess);
+            if (guessedNumber == secretNumber) {
+                sendMessage("Congratulations! You guessed the number.");
+                resetGame();
+            } else if (guessedNumber < secretNumber) {
+                sendMessage("Too low! Try a higher number.");
+            } else {
+                sendMessage("Too high! Try a lower number.");
+            }
+        } catch (NumberFormatException e) {
+            sendMessage("Invalid input. Please enter a valid number.");
+        }
+    }
+    private void resetGame() throws IOException {
+        this.secretNumber = new Random().nextInt(100) + 1;
+        this.gameStarted = false;
+        sendMessage("Game has been reset. Type '@game' to begin a new game.");
+    }
+
     public static void main(String[] args) {
         if (args.length != 1) {
             System.out.println("usage : java Server <port>");
@@ -64,7 +99,12 @@ public class Server {
             Thread sendThread = new Thread(() -> {
                 Scanner scanner = new Scanner(System.in);
                 while (true) {
-                    String messageToClient = scanner.nextLine();
+                    String messageToClient = scanner.nextLine().trim();
+
+                    if (messageToClient.isEmpty()) {
+                        System.out.println("Message cannot be empty, please enter a message:");
+                        continue;
+                    }
                     try {
                         if (messageToClient.startsWith("@name") ){
                             if (messageToClient.split(" ").length == 1){
@@ -95,5 +135,20 @@ public class Server {
             System.out.println("error: " + e.getMessage());
             System.out.println("invalid <port> arguments");
         }
+    }
+    public int getMaxRange() {
+        return maxRange;
+    }
+
+    public void setMaxRange(int maxRange) {
+        this.maxRange = maxRange;
+    }
+
+    public int getMinRange() {
+        return minRange;
+    }
+
+    public void setMinRange(int minRange) {
+        this.minRange = minRange;
     }
 }

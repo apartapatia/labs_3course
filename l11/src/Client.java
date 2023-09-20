@@ -87,7 +87,11 @@ public class Client {
             //start thread to send messages
             Scanner scanner = new Scanner(System.in);
             while (true) {
-                String messageToSend = scanner.nextLine();
+                String messageToSend = scanner.nextLine().trim();
+                if (messageToSend.isEmpty()) {
+                    System.out.println("Message cannot be empty, please enter a message:");
+                    continue;
+                }
                 if (messageToSend.startsWith("@name")) {
                     if (messageToSend.split(" ").length == 1){
                         System.out.println("name is empty, try again!");
@@ -99,6 +103,10 @@ public class Client {
                     client.sendQuitNotification();
                     System.out.println("exiting chat!");
                     break;
+                } else if (Objects.equals(messageToSend.split(" ")[0], "@game")) {
+                    client.sendMessage("@game");
+                    String digit = scanner.nextLine();
+                    client.sendMessage(digit);
                 } else {
                     client.sendMessage(messageToSend);
                 }
