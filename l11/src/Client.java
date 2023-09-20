@@ -81,6 +81,7 @@ public class Client {
             Thread receiveThread = new Thread(client::receiveMessages);
             System.out.println("type '@name' to change a name");
             System.out.println("type '@quit' to exit");
+            System.out.println("type '@game' to play predict number game");
             receiveThread.start();
 
 
@@ -105,8 +106,8 @@ public class Client {
                     break;
                 } else if (Objects.equals(messageToSend.split(" ")[0], "@game")) {
                     client.sendMessage("@game");
-                    String digit = scanner.nextLine().trim();
-                    client.sendMessage(digit);
+                    String predict = scanner.nextLine().trim();
+                    client.sendMessage(predict);
                 } else {
                     client.sendMessage(messageToSend);
                 }

@@ -36,6 +36,7 @@ public class Server {
                 if (Objects.equals((messageFromClient.split(" ")[1]), "@game")){
                     sendMessage("game was started!");
                     gameStarted = true;
+                    sendMessage("print l or h for predict the number");
                 } else if (gameStarted){
                     processGuess(messageFromClient.split(" ")[1]);
                 } else {
@@ -83,9 +84,11 @@ public class Server {
                 } else {
                     sendMessage("no");
                 }
+            } else {
+                sendMessage("Invalid input. Please enter 'h' for too high or 'l' for too low.");
             }
-        } catch (NumberFormatException e) {
-            sendMessage("Invalid input. Please enter a valid number.");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
     private void resetGame() throws IOException {
