@@ -16,6 +16,9 @@ public class Server {
     private boolean gameStarted = false;
     private int minRange = 1;
     private int maxRange = 100;
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_BLUE = "\u001B[36m";
+
 
     public Server(DatagramSocket datagramSocket) {
         this.datagramSocket = datagramSocket;
@@ -36,7 +39,7 @@ public class Server {
                 if (Objects.equals((messageFromClient.split(" ")[1]), "@game")){
                     sendMessage("game was started!");
                     gameStarted = true;
-                    sendMessage("print l or h for predict the number");
+                    sendGameMessage("print l or h for predict the number");
                 } else if (gameStarted){
                     processGuess(messageFromClient.split(" ")[1]);
                 } else {
@@ -62,30 +65,37 @@ public class Server {
         datagramSocket.send(sendPacket);
     }
 
+    public void sendGameMessage(String message) throws IOException {
+        String coloredMessage = ANSI_BLUE + message + ANSI_RESET;
+        byte[] messageBytes = coloredMessage.getBytes();
+        DatagramPacket sendPacket = new DatagramPacket(messageBytes, messageBytes.length, this.clientAddress, this.clientPort);
+        datagramSocket.send(sendPacket);
+    }
+
     //@game methods
     public void processGuess(String guess) throws IOException {
         int guessedNumber = minRange + (maxRange - minRange + 1) / 2;
-        System.out.println(guessedNumber + " this number to l? or to h?");
+        sendGameMessage(guessedNumber + " - your predict number");
         try {
             if (guessedNumber == secretNumber) {
-                sendMessage("congratulations! You guessed the number.");
+                sendGameMessage("congratulations! you guessed the number.");
                 resetGame();
             } else if (guess.equals("h")) {
                 if (guessedNumber > secretNumber){
-                    sendMessage("yes");
+                    sendGameMessage("yes your number was high");
                     setMaxRange(guessedNumber - 1);
                 } else {
-                    sendMessage("no");
+                    sendGameMessage("no your number didnt high");
                 }
             } else if (guess.equals("l")) {
                 if (guessedNumber < secretNumber){
-                    sendMessage("yes");
+                    sendGameMessage("yes your number was low");
                     setMinRange(guessedNumber + 1);
                 } else {
-                    sendMessage("no");
+                    sendGameMessage("no your number didnt low");
                 }
             } else {
-                sendMessage("invalid input. Please enter 'h' for too high or 'l' for too low.");
+                sendGameMessage("invalid input. please enter 'h' for too high or 'l' for too low.");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -96,7 +106,7 @@ public class Server {
         setMaxRange(100);
         this.secretNumber = new Random().nextInt(getMaxRange()) + getMinRange();
         this.gameStarted = false;
-        sendMessage("game has been reset. Type '@game' to begin a new game.");
+        sendGameMessage("game has been reset. type '@game' to begin a new game.");
     }
 
     public static void main(String[] args) {
