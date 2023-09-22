@@ -17,7 +17,7 @@ public class Server {
     private int minRange = 1;
     private int maxRange = 100;
     public static final String ANSI_RESET = "\u001B[0m";
-    public static final String ANSI_BLUE = "\u001B[36m";
+    public static final String ANSI_BLUE = "\u001b[38;5;49m";
 
 
     public Server(DatagramSocket datagramSocket) {
