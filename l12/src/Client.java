@@ -22,14 +22,19 @@ public class Client {
             BufferedReader userInputReader = new BufferedReader(new InputStreamReader(System.in));
             String message;
             while ((message = userInputReader.readLine()) != null) {
-                PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
-                writer.println(message);
+                if (message.equals("@quit")){
+                    break;
+                } else {
+                    PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
+                    writer.println(message);
+                }
             }
 
             socket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        System.exit(0);
     }
 
     private record ServerReader(Socket socket) implements Runnable {

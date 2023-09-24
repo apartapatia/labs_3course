@@ -84,14 +84,23 @@ public class Server {
 
                 String message;
                 while ((message = reader.readLine()) != null) {
+                    if (message.isEmpty()) {
+                        sendMessage("message cannot be empty, please enter a message:");
+                        continue;
+                    }
                     if (message.equals("@quit")){
                         server.removeClient(this);
                         userOffServer = true;
                         clientSocket.close();
                         break;
+                    } else if (message.startsWith("@name")) {
+                        server.associateUsername(this, message.split(" ")[1]);
+                    } else if (message.startsWith("@senduser")) {
+
+                    } else {
+                        server.broadcastMessage(message, server.getUsername(this));
                     }
 
-                    server.broadcastMessage(message, server.getUsername(this));
                 }
             } catch (IOException e) {
                 e.printStackTrace();
