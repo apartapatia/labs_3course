@@ -118,7 +118,7 @@ public class Server {
 
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.severe("an error occurred in run " + e.getMessage());
             } finally {
                 try {
                     clientSocket.close();
@@ -126,7 +126,7 @@ public class Server {
                         server.removeClient(this);
                     }
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.severe("an error occurred in run " + e.getMessage());
                 }
             }
         }
