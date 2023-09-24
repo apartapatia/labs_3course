@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class Server {
     private final ServerSocket serverSocket;
@@ -13,6 +14,7 @@ public class Server {
     private static final String ANSI_SEND = "\u001b[48;5;63m";
     private static final String ANSI_SendDirect = "\u001b[48;5;213m";
     public static final String ANSI_RESET = "\u001B[0m";
+    private static final Logger logger = Logger.getLogger(Server.class.getName());
 
     public Server(ServerSocket serverSocket) {
         this.serverSocket = serverSocket;
@@ -22,7 +24,8 @@ public class Server {
 
     public void start() {
         try {
-            System.out.println("server started. listening on port " + serverSocket.getLocalPort());
+            logger.info("server started. listening on port " + serverSocket.getLocalPort());
+            //System.out.println("server started. listening on port " + serverSocket.getLocalPort());
 
             while (true) {
                 Socket clientSocket = serverSocket.accept();
@@ -35,7 +38,7 @@ public class Server {
                 clientThread.start();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.severe("an error occurred in start " + e.getMessage());
         }
     }
 
@@ -56,7 +59,7 @@ public class Server {
     public synchronized void removeClient(ClientHandler clientHandler) {
         clientHandlers.remove(clientHandler);
         String removedUsername = clientUsernames.remove(clientHandler);
-        broadcastMessage("User " + removedUsername + " has left the chat.", "Server");
+        broadcastMessage("user " + removedUsername + " has left the chat.", "server");
         System.out.println("client disconnected: " + removedUsername);
     }
 
@@ -85,6 +88,7 @@ public class Server {
                         username = reader.readLine();
                 }
                 server.associateUsername(this, username);
+                server.broadcastMessage("user " + username + " has join the chat.", "server");
 
                 String message;
                 while ((message = reader.readLine()) != null) {
@@ -126,7 +130,6 @@ public class Server {
                 }
             }
         }
-
         public void sendMessage(String message) {
             writer.println(message);
         }
@@ -156,7 +159,7 @@ public class Server {
             Server server = new Server(serverSocket);
             server.start();
         } catch (NumberFormatException | IOException e) {
-            System.err.println("invalid port number or unable to start server: " + e.getMessage());
+            logger.severe("invalid port number or unable to start server: " + e.getMessage());
         }
     }
 }

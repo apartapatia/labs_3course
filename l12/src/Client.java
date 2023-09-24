@@ -1,8 +1,9 @@
 import java.io.*;
 import java.net.*;
+import java.util.logging.Logger;
 
 public class Client {
-
+    private static final Logger logger = Logger.getLogger(Client.class.getName());
     private final String serverAddress;
     private final int serverPort;
 
@@ -12,9 +13,14 @@ public class Client {
     }
 
     public void start() {
-        try {
-            Socket socket = new Socket(serverAddress, serverPort);
-            System.out.println("connected to server.");
+        try (Socket socket = new Socket(serverAddress, serverPort))
+        {
+            //last version
+            //Socket socket = new Socket(serverAddress, serverPort);
+            //System.out.println("connected to server.");
+            //System.out.println("write your username: ");
+
+            logger.info("connected to server.");
             System.out.println("write your username: ");
 
             Thread readThread = new Thread(new ServerReader(socket));
@@ -30,12 +36,10 @@ public class Client {
                     writer.println(message);
                 }
             }
-
-            socket.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.severe("an error occurred " + e.getMessage());
         }
-        System.exit(0);
+        //System.exit(0);
     }
 
     private record ServerReader(Socket socket) implements Runnable {
@@ -50,7 +54,7 @@ public class Client {
                         System.out.println(message);
                     }
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.severe("an error occurred in ServerReader " + e.getMessage());
                 }
             }
         }
