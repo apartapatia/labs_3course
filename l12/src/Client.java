@@ -15,6 +15,7 @@ public class Client {
         try {
             Socket socket = new Socket(serverAddress, serverPort);
             System.out.println("connected to server.");
+            System.out.println("write your username: ");
 
             Thread readThread = new Thread(new ServerReader(socket));
             readThread.start();
@@ -38,7 +39,6 @@ public class Client {
     }
 
     private record ServerReader(Socket socket) implements Runnable {
-
         @Override
             public void run() {
                 try {

@@ -10,6 +10,8 @@ public class Server {
     private final ServerSocket serverSocket;
     private final List<ClientHandler> clientHandlers;
     private final Map<ClientHandler, String> clientUsernames;
+    private static final String ANSI_SEND = "\u001b[48;5;63m";
+    public static final String ANSI_RESET = "\u001B[0m";
 
     public Server(ServerSocket serverSocket) {
         this.serverSocket = serverSocket;
@@ -38,7 +40,7 @@ public class Server {
 
     public synchronized void broadcastMessage(String message, String sender) {
         for (ClientHandler clientHandler : clientHandlers) {
-            clientHandler.sendMessage(sender + ": " + message);
+            clientHandler.sendMessage(ANSI_SEND +  " " + sender + ": " + message + " " + ANSI_RESET);
         }
     }
 
@@ -96,7 +98,14 @@ public class Server {
                     } else if (message.startsWith("@name")) {
                         server.associateUsername(this, message.split(" ")[1]);
                     } else if (message.startsWith("@senduser")) {
-
+                        String[] parts = message.split(" ", 3);
+                        if (parts.length != 3){
+                            sendMessage("asd");
+                        } else {
+                            String targetName = parts[1];
+                            String messageToSend = parts[2];
+                            sendDirectMessage(targetName, messageToSend);
+                        }
                     } else {
                         server.broadcastMessage(message, server.getUsername(this));
                     }
@@ -118,6 +127,16 @@ public class Server {
 
         public void sendMessage(String message) {
             writer.println(message);
+        }
+
+        private void sendDirectMessage(String targetName, String messageToSend) {
+            for (ClientHandler clientHandler : server.clientHandlers){
+                if (server.getUsername(clientHandler).equals(targetName)){
+                    clientHandler.sendMessage("(private) " + server.getUsername(this) + ": " + messageToSend);
+                    return;
+                }
+            }
+            sendMessage("user " + targetName + " not found.");
         }
     }
 
