@@ -56,6 +56,7 @@ public class Server {
     public synchronized void removeClient(ClientHandler clientHandler) {
         clientHandlers.remove(clientHandler);
         String removedUsername = clientUsernames.remove(clientHandler);
+        broadcastMessage("User " + removedUsername + " has left the chat.", "Server");
         System.out.println("client disconnected: " + removedUsername);
     }
 
@@ -140,6 +141,8 @@ public class Server {
             }
             sendMessage("user " + targetName + " not found.");
         }
+
+
     }
 
     public static void main(String[] args) {
