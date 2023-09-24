@@ -11,6 +11,7 @@ public class Server {
     private final List<ClientHandler> clientHandlers;
     private final Map<ClientHandler, String> clientUsernames;
     private static final String ANSI_SEND = "\u001b[48;5;63m";
+    private static final String ANSI_SendDirect = "\u001b[48;5;213m";
     public static final String ANSI_RESET = "\u001B[0m";
 
     public Server(ServerSocket serverSocket) {
@@ -132,7 +133,8 @@ public class Server {
         private void sendDirectMessage(String targetName, String messageToSend) {
             for (ClientHandler clientHandler : server.clientHandlers){
                 if (server.getUsername(clientHandler).equals(targetName)){
-                    clientHandler.sendMessage("(private) " + server.getUsername(this) + ": " + messageToSend);
+                    clientHandler.sendMessage(ANSI_SendDirect + " " + "(private) " + server.getUsername(this)
+                            + ": " + messageToSend + " " + ANSI_RESET);
                     return;
                 }
             }
