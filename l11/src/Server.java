@@ -39,7 +39,7 @@ public class Server {
                 if (Objects.equals((messageFromClient.split(" ")[1]), "@game")){
                     sendMessage("game was started!");
                     gameStarted = true;
-                    sendGameMessage("print l or h for predict the number");
+                    sendGameMessage("rules : ask questions to the server to find out if your number is higher or lower than the number guessed by the server \nprint l or h for predict the number");
                 } else if (gameStarted){
                     processGuess(messageFromClient.split(" ")[1]);
                 } else {
@@ -82,17 +82,17 @@ public class Server {
                 resetGame();
             } else if (guess.equals("h")) {
                 if (guessedNumber > secretNumber){
-                    sendGameMessage("yes your number was high");
+                    sendGameMessage("yes, your number higher.");
                     setMaxRange(guessedNumber - 1);
                 } else {
-                    sendGameMessage("no your number didnt high");
+                    sendGameMessage("no, your number lower .");
                 }
             } else if (guess.equals("l")) {
                 if (guessedNumber < secretNumber){
-                    sendGameMessage("yes your number was low");
+                    sendGameMessage("yes, your number lower.");
                     setMinRange(guessedNumber + 1);
                 } else {
-                    sendGameMessage("no your number didnt low");
+                    sendGameMessage("no, your number higher.");
                 }
             } else {
                 sendGameMessage("invalid input. please enter 'h' for too high or 'l' for too low.");
