@@ -102,11 +102,12 @@ public class Server {
                         clientSocket.close();
                         break;
                     } else if (message.startsWith("@name")) {
+                        server.broadcastMessage("user " + username + " has change the name on " + message.split(" ")[1], "server");
                         server.associateUsername(this, message.split(" ")[1]);
                     } else if (message.startsWith("@senduser")) {
                         String[] parts = message.split(" ", 3);
                         if (parts.length != 3){
-                            sendMessage("asd");
+                            sendMessage("usage : <@senduser> <targetName> <message>");
                         } else {
                             String targetName = parts[1];
                             String messageToSend = parts[2];
