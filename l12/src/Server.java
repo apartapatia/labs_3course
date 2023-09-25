@@ -89,8 +89,8 @@ public class Server {
                 String username = reader.readLine();
                 System.out.println("client identified as: " + username);
                 while (server.clientUsernames.containsValue(username)){
-                        sendMessage("your name is repeated, so change it.\n");
-                        username = reader.readLine();
+                    sendMessage("your name is repeated, so change it.\n");
+                    username = reader.readLine();
                 }
                 server.associateUsername(this, username);
                 server.broadcastMessage("user " + username + " has join the chat.", "server");
