@@ -12,10 +12,11 @@ public class Server {
     private final ServerSocket serverSocket;
     private final List<ClientHandler> clientHandlers;
     private final Map<ClientHandler, String> clientUsernames;
+    private static final Logger logger = Logger.getLogger(Server.class.getName());
+    // color
     private static final String ANSI_SEND = "\u001b[48;5;63m";
     private static final String ANSI_SendDirect = "\u001b[48;5;213m";
     public static final String ANSI_RESET = "\u001B[0m";
-    private static final Logger logger = Logger.getLogger(Server.class.getName());
 
     public Server(ServerSocket serverSocket) {
         this.serverSocket = serverSocket;
@@ -25,11 +26,11 @@ public class Server {
 
     public void start() {
         try {
-            logger.info("Server started. Listening on port " + serverSocket.getLocalPort());
+            logger.info("server started. listening on port " + serverSocket.getLocalPort());
 
             while (true) {
                 Socket clientSocket = serverSocket.accept();
-                logger.info("Client connected from: " + clientSocket.getInetAddress() + ":" + clientSocket.getPort());
+                logger.info("client connected from: " + clientSocket.getInetAddress() + ":" + clientSocket.getPort());
 
                 ClientHandler clientHandler = new ClientHandler(clientSocket, this);
                 clientHandlers.add(clientHandler);
@@ -42,6 +43,8 @@ public class Server {
         }
     }
 
+
+    // work with clients
     public synchronized void broadcastMessage(String message, String sender) {
         for (ClientHandler clientHandler : clientHandlers) {
             clientHandler.sendMessage(ANSI_SEND +  " " + sender + ": " + message + " " + ANSI_RESET);
