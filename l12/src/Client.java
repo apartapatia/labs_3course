@@ -25,7 +25,7 @@ public class Client {
             System.out.println("write your username: "); */
 
             logger.info("connected to server.");
-            System.out.println("write your username\n(type '@quit' to exit or type '@senduser' to send private message):");
+            System.out.println("\nwrite your username\n(type '@quit' to exit or type '@senduser' to send private message):");
 
             Thread readThread = new Thread(new ServerReader(socket));
             readThread.start();
