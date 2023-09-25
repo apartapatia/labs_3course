@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Server {
@@ -24,12 +25,11 @@ public class Server {
 
     public void start() {
         try {
-            logger.info("server started. listening on port " + serverSocket.getLocalPort());
-            //System.out.println("server started. listening on port " + serverSocket.getLocalPort());
+            logger.info("Server started. Listening on port " + serverSocket.getLocalPort());
 
             while (true) {
                 Socket clientSocket = serverSocket.accept();
-                System.out.println("client connected from: " + clientSocket.getInetAddress() + ":" + clientSocket.getPort());
+                logger.info("Client connected from: " + clientSocket.getInetAddress() + ":" + clientSocket.getPort());
 
                 ClientHandler clientHandler = new ClientHandler(clientSocket, this);
                 clientHandlers.add(clientHandler);
@@ -38,7 +38,7 @@ public class Server {
                 clientThread.start();
             }
         } catch (IOException e) {
-            logger.severe("an error occurred in start " + e.getMessage());
+            logger.log(Level.SEVERE, "an error occurred in start", e);
         }
     }
 
@@ -119,7 +119,7 @@ public class Server {
 
                 }
             } catch (IOException e) {
-                logger.severe("an error occurred in run " + e.getMessage());
+                logger.log(Level.SEVERE, "an error occurred in run", e);
             } finally {
                 try {
                     clientSocket.close();
@@ -127,7 +127,7 @@ public class Server {
                         server.removeClient(this);
                     }
                 } catch (IOException e) {
-                    logger.severe("an error occurred in run " + e.getMessage());
+                    logger.log(Level.SEVERE, "an error occurred in run", e);
                 }
             }
         }
@@ -160,7 +160,7 @@ public class Server {
             Server server = new Server(serverSocket);
             server.start();
         } catch (NumberFormatException | IOException e) {
-            logger.severe("invalid port number or unable to start server: " + e.getMessage());
+            logger.log(Level.SEVERE, "invalid port number or unable to start server: ", e);
         }
     }
 }
