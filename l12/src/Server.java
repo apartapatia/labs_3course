@@ -1,4 +1,4 @@
-import io.LoggerSingleton;
+import logging.LoggerSingleton;
 
 import java.io.*;
 import java.net.ServerSocket;
