@@ -1,3 +1,5 @@
+import io.LoggerSingleton;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -12,7 +14,7 @@ public class Server {
     private final ServerSocket serverSocket;
     private final List<ClientHandler> clientHandlers;
     private final Map<ClientHandler, String> clientUsernames;
-    private static final Logger logger = Logger.getLogger(Server.class.getName());
+    private static final Logger logger = LoggerSingleton.getInstance();
     // color
     private static final String ANSI_SEND = "\u001b[48;5;63m";
     private static final String ANSI_SendDirect = "\u001b[48;5;213m";

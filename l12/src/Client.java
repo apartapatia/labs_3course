@@ -1,3 +1,5 @@
+import io.LoggerSingleton;
+
 import java.io.*;
 import java.net.*;
 import java.util.logging.Level;
@@ -5,7 +7,7 @@ import java.util.logging.Logger;
 
 public class Client {
 
-    private static final Logger logger = Logger.getLogger(Client.class.getName());
+    private static final Logger logger = LoggerSingleton.getInstance();
     private final String serverAddress;
     private final int serverPort;
 
@@ -23,7 +25,7 @@ public class Client {
             System.out.println("write your username: "); */
 
             logger.info("connected to server.");
-            System.out.println("write your message\n (type '@quit' to exit or type '@senduser' to send private message):");
+            System.out.println("write your username\n(type '@quit' to exit or type '@senduser' to send private message):");
 
             Thread readThread = new Thread(new ServerReader(socket));
             readThread.start();
@@ -39,7 +41,8 @@ public class Client {
                 }
             }
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "an error occurred in start", e);
+            System.exit(0);
+            //logger.log(Level.SEVERE, "an error occurred in start", e);
         }
         //System.exit(0);
     }
@@ -56,14 +59,15 @@ public class Client {
                     System.out.println(message);
                 }
             } catch (IOException e) {
-                logger.log(Level.SEVERE, "an error occurred in ServerReader", e);
+                System.exit(0);
+                //logger.log(Level.SEVERE, "an error occurred in ServerReader", e);
             }
         }
     }
     public static void main(String[] args) {
         try {
             if (args.length != 2) {
-                System.out.println("Usage: java Client <server_address> <server_port>");
+                System.out.println("usage: java Client <server_address> <server_port>");
                 return;
             }
             String serverAddress = args[0];
@@ -72,7 +76,7 @@ public class Client {
             Client client = new Client(serverAddress, serverPort);
             client.start();
         } catch (NumberFormatException e) {
-            logger.log(Level.SEVERE, "Invalid port number or unable to start server: ", e);
+            logger.log(Level.SEVERE, "invalid port number or unable to start server: ", e);
         }
     }
 }
