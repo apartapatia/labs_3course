@@ -45,11 +45,30 @@ public class Server {
         }
     }
 
-
     // work with clients
     public synchronized void broadcastMessage(String message, String sender) {
         for (ClientHandler clientHandler : clientHandlers) {
             clientHandler.sendMessage(ANSI_SEND +  " " + sender + ": " + message + " " + ANSI_RESET);
+        }
+    }
+    public synchronized void broadcastUserJoinMessage(String username) {
+        String message = "user " + username + " has joined the chat.";
+        for (ClientHandler clientHandler : clientHandlers) {
+            clientHandler.sendMessage(ANSI_SEND + " " + "server" + ": " + message + " " + ANSI_RESET);
+        }
+    }
+
+    public synchronized void broadcastUserLeaveMessage(String username) {
+        String message = "user " + username + " has left the chat.";
+        for (ClientHandler clientHandler : clientHandlers) {
+            clientHandler.sendMessage(ANSI_SEND + " " + "server" + ": " + message + " " + ANSI_RESET);
+        }
+    }
+
+    public synchronized void broadcastNameChangeMessage(String oldUsername, String newUsername) {
+        String message = "user " + oldUsername + " has changed the name to " + newUsername + ".";
+        for (ClientHandler clientHandler : clientHandlers) {
+            clientHandler.sendMessage(ANSI_SEND + " " + "server" + ": " + message + " " + ANSI_RESET);
         }
     }
 
@@ -64,7 +83,7 @@ public class Server {
     public synchronized void removeClient(ClientHandler clientHandler) {
         clientHandlers.remove(clientHandler);
         String removedUsername = clientUsernames.remove(clientHandler);
-        broadcastMessage("user " + removedUsername + " has left the chat.", "server");
+        broadcastUserLeaveMessage(removedUsername);
         System.out.println("client disconnected: " + removedUsername);
     }
 
@@ -93,7 +112,7 @@ public class Server {
                     username = reader.readLine();
                 }
                 server.associateUsername(this, username);
-                server.broadcastMessage("user " + username + " has join the chat.", "server");
+                server.broadcastUserJoinMessage(username);
 
                 String message;
                 while ((message = reader.readLine()) != null) {
@@ -107,7 +126,7 @@ public class Server {
                         clientSocket.close();
                         break;
                     } else if (message.startsWith("@name")) {
-                        server.broadcastMessage("user " + username + " has change the name on " + message.split(" ")[1], "server");
+                        server.broadcastNameChangeMessage(username, message.split(" ")[1]);
                         server.associateUsername(this, message.split(" ")[1]);
                     } else if (message.startsWith("@senduser")) {
                         String[] parts = message.split(" ", 3);
