@@ -34,7 +34,7 @@ public class Server {
                 Socket clientSocket = serverSocket.accept();
                 logger.info("client connected from: " + clientSocket.getInetAddress() + ":" + clientSocket.getPort());
 
-                ClientHandler clientHandler = new ClientHandler(clientSocket, this);
+                var clientHandler = new ClientHandler(clientSocket, this);
                 clientHandlers.add(clientHandler);
 
                 Thread clientThread = new Thread(clientHandler);
@@ -103,7 +103,7 @@ public class Server {
         public void run() {
             try {
                 InputStream inputStream = clientSocket.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                var reader = new BufferedReader(new InputStreamReader(inputStream));
 
                 String username = reader.readLine();
                 System.out.println("client identified as: " + username);

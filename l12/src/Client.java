@@ -30,7 +30,7 @@ public class Client {
             Thread readThread = new Thread(new ServerReader(socket));
             readThread.start();
 
-            BufferedReader userInputReader = new BufferedReader(new InputStreamReader(System.in));
+            var userInputReader = new BufferedReader(new InputStreamReader(System.in));
             String message;
             while ((message = userInputReader.readLine()) != null) {
                 if (message.equals("@quit")){
@@ -41,7 +41,7 @@ public class Client {
                 }
             }
         } catch (IOException e) {
-            System.exit(0);
+            //System.exit(0);
             //logger.log(Level.SEVERE, "an error occurred in start", e);
         }
         //System.exit(0);
@@ -52,14 +52,14 @@ public class Client {
         public void run() {
             try {
                 InputStream inputStream = socket.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                var reader = new BufferedReader(new InputStreamReader(inputStream));
 
                 String message;
                 while ((message = reader.readLine()) != null) {
                     System.out.println(message);
                 }
             } catch (IOException e) {
-                System.exit(0);
+                //System.exit(0);
                 //logger.log(Level.SEVERE, "an error occurred in ServerReader", e);
             }
         }
