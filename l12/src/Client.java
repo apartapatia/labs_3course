@@ -41,6 +41,7 @@ public class Client {
                 }
             }
         } catch (IOException e) {
+            //TODO EXCEPTION
             //System.exit(0);
             //logger.log(Level.SEVERE, "an error occurred in start", e);
         }
