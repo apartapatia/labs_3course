@@ -17,8 +17,7 @@ public class Client {
     }
 
     public void start() {
-        try (Socket socket = new Socket(serverAddress, serverPort))
-        {
+        try (Socket socket = new Socket(serverAddress, serverPort)) {
             /* last version
             Socket socket = new Socket(serverAddress, serverPort);
             System.out.println("connected to server.");
@@ -32,21 +31,30 @@ public class Client {
 
             var userInputReader = new BufferedReader(new InputStreamReader(System.in));
             String message;
-            while ((message = userInputReader.readLine()) != null) {
-                if (message.equals("@quit")){
-                    break;
-                } else {
-                    PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
-                    writer.println(message);
+            while (true) {
+                try {
+                    message = userInputReader.readLine();
+                    if (message == null) {
+                            break;
+                        } else if (message.equals("@quit")) {
+                            break;
+                        } else {
+                            PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
+                            writer.println(message);
+                        }
+                    } catch (SocketException se) {
+                        if (se.getMessage().equalsIgnoreCase("socket closed")) {
+                            break;
+                        } else {
+                            throw se;
+                        }
+                    }
                 }
-            }
         } catch (IOException e) {
-            //TODO EXCEPTION
-            //System.exit(0);
-            //logger.log(Level.SEVERE, "an error occurred in start", e);
+            logger.log(Level.SEVERE, "an error occurred in start", e);
         }
-        //System.exit(0);
     }
+
 
     private record ServerReader(Socket socket) implements Runnable {
         @Override
@@ -56,12 +64,23 @@ public class Client {
                 var reader = new BufferedReader(new InputStreamReader(inputStream));
 
                 String message;
-                while ((message = reader.readLine()) != null) {
-                    System.out.println(message);
+                while (true) {
+                    try {
+                        message = reader.readLine();
+                        if (message == null) {
+                            break;
+                        }
+                        System.out.println(message);
+                    } catch (SocketException se) {
+                        if (se.getMessage().equalsIgnoreCase("socket closed")) {
+                            break;
+                        } else {
+                            throw se;
+                        }
+                    }
                 }
             } catch (IOException e) {
-                //System.exit(0);
-                //logger.log(Level.SEVERE, "an error occurred in ServerReader", e);
+                logger.log(Level.SEVERE, "an error occurred in ServerReader", e);
             }
         }
     }
