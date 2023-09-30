@@ -3,10 +3,10 @@ import logging.LoggerSingleton;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,16 +19,27 @@ public class Server {
     private static final String ANSI_SEND = "\u001b[48;5;63m";
     private static final String ANSI_SendDirect = "\u001b[48;5;213m";
     public static final String ANSI_RESET = "\u001B[0m";
+    // casino instance
+    private volatile boolean betIsReady;
+    private final ScheduledExecutorService scheduler;
+    private Map<String, Integer> betUsersMap = new HashMap<>();
+    public final Integer circleMax = 37;
 
     public Server(ServerSocket serverSocket) {
         this.serverSocket = serverSocket;
         this.clientHandlers = new ArrayList<>();
         this.clientUsernames = new HashMap<>();
+        this.scheduler = Executors.newScheduledThreadPool(1);
+        this.betIsReady = false;
     }
 
+
+    //TODO time management
     public void start() {
         try {
             logger.info("server started. listening on port " + serverSocket.getLocalPort());
+
+            scheduler.scheduleAtFixedRate(this::openBetting, 0, 15, TimeUnit.SECONDS);
 
             while (true) {
                 Socket clientSocket = serverSocket.accept();
@@ -39,10 +50,41 @@ public class Server {
 
                 Thread clientThread = new Thread(clientHandler);
                 clientThread.start();
+
             }
         } catch (IOException e) {
             logger.log(Level.SEVERE, "an error occurred in start", e);
         }
+
+    }
+
+    //TODO process bet
+
+    private void betWinner(){
+        Random random = new Random();
+        Integer winnerBet = random.nextInt(circleMax);
+        System.out.println(winnerBet);
+            for (Map.Entry<String, Integer> entry : betUsersMap.entrySet()){
+                if (entry.getValue().equals(circleMax)){
+                    broadcastMessage("winner " + entry.getKey(), "server");
+                }
+            }
+    }
+
+    private void openBetting() {
+        if (!betIsReady) {
+            broadcastMessage("betting open", "server");
+            betIsReady = true;
+            scheduler.schedule(this::closeBetting, 10, TimeUnit.SECONDS);
+        }
+    }
+
+    private void closeBetting() {
+        betWinner();
+        System.out.println(betUsersMap.toString());
+        betUsersMap.clear();
+        broadcastMessage("betting closed", "server");
+        betIsReady = false;
     }
 
     // work with clients
@@ -137,6 +179,10 @@ public class Server {
                             String messageToSend = parts[2];
                             sendDirectMessage(targetName, messageToSend);
                         }
+                    } else if (message.startsWith("@bet")) {
+                        if (server.betIsReady) {
+                            server.betUsersMap.put(username, Integer.valueOf(message.split(" ")[1]));
+                        }
                     } else {
                         server.broadcastMessage(message, server.getUsername(this));
                     }
@@ -187,4 +233,5 @@ public class Server {
             logger.log(Level.SEVERE, "invalid port number or unable to start server: ", e);
         }
     }
+
 }
