@@ -39,7 +39,10 @@ public class Server {
         try {
             logger.info("server started. listening on port " + serverSocket.getLocalPort());
 
-            scheduler.scheduleAtFixedRate(this::openBetting, 0, 15, TimeUnit.SECONDS);
+            Random random = new Random();
+            int randomBetTime = 1 + random.nextInt(10);
+
+            scheduler.scheduleAtFixedRate(this::openBetting, randomBetTime, randomBetTime, TimeUnit.SECONDS);
 
             while (true) {
                 Socket clientSocket = serverSocket.accept();
@@ -63,9 +66,8 @@ public class Server {
     private void betWinner(){
         Random random = new Random();
         Integer winnerBet = random.nextInt(circleMax);
-        System.out.println(winnerBet);
             for (Map.Entry<String, Integer> entry : betUsersMap.entrySet()){
-                if (entry.getValue().equals(circleMax)){
+                if (entry.getValue().equals(winnerBet)){
                     broadcastMessage("winner " + entry.getKey(), "server");
                 }
             }
