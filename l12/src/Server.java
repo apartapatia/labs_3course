@@ -40,7 +40,7 @@ public class Server {
             logger.info("server started. listening on port " + serverSocket.getLocalPort());
 
             Random random = new Random();
-            int randomBetTime = 1 + random.nextInt(10);
+            int randomBetTime = 10 + random.nextInt(30);
 
             scheduler.scheduleAtFixedRate(this::openBetting, randomBetTime, randomBetTime, TimeUnit.SECONDS);
 
@@ -65,11 +65,16 @@ public class Server {
 
     private void betWinner(){
         Random random = new Random();
-        Integer winnerBet = random.nextInt(circleMax);
+        boolean winnerUser = false;
+        int winnerBet = random.nextInt(circleMax);
             for (Map.Entry<String, Integer> entry : betUsersMap.entrySet()){
                 if (entry.getValue().equals(winnerBet)){
+                    winnerUser = true;
                     broadcastMessage("winner " + entry.getKey(), "server");
                 }
+            }
+            if (!winnerUser) {
+                broadcastMessage("winner bet is " + winnerBet, "server");
             }
     }
 
@@ -83,7 +88,6 @@ public class Server {
 
     private void closeBetting() {
         betWinner();
-        System.out.println(betUsersMap.toString());
         betUsersMap.clear();
         broadcastMessage("betting closed", "server");
         betIsReady = false;
@@ -182,8 +186,13 @@ public class Server {
                             sendDirectMessage(targetName, messageToSend);
                         }
                     } else if (message.startsWith("@bet")) {
-                        if (server.betIsReady) {
-                            server.betUsersMap.put(username, Integer.valueOf(message.split(" ")[1]));
+                        String[] parts = message.split(" ");
+                        if (parts.length != 2){
+                            sendMessage("usage : <@bet> <numberBet>");
+                        } else {
+                            if (server.betIsReady) {
+                                server.betUsersMap.put(username, Integer.valueOf(parts[1]));
+                            }
                         }
                     } else {
                         server.broadcastMessage(message, server.getUsername(this));
