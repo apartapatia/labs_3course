@@ -128,7 +128,7 @@
             <div class="user-name"><%= user.getName() %>
             </div>
             <div class="user-details">
-                Phone: <%= user.getPhoneNumber() %><br>
+                Phone: <%= user.getPhoneNumbers() %><br>
             </div>
         </div>
         <%

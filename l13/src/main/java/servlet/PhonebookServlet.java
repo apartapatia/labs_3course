@@ -26,7 +26,8 @@ public class PhonebookServlet extends HttpServlet {
     @Override
     public void init() throws ServletException {
         super.init();
-        this.users = loadUsersFromPhonebook();
+        this.users = new ArrayList<>();
+        this.users.addAll(loadUsersFromPhonebook());
     }
 
     @Override
@@ -61,13 +62,29 @@ public class PhonebookServlet extends HttpServlet {
             JsonObject jsonObject = JsonParser.parseString(requestBody.toString()).getAsJsonObject();
             String userName = jsonObject.get("name").getAsString();
             String userPhoneNumber = jsonObject.get("phoneNumber").getAsString();
-            User newUser = new User(userName, userPhoneNumber);
-            users.add(newUser);
+
+            User existingUser = findUserByName(userName);
+            if (existingUser != null) {
+                existingUser.addPhoneNumber(userPhoneNumber);
+            } else {
+                User newUser = new User(userName);
+                newUser.addPhoneNumber(userPhoneNumber);
+                users.add(newUser);
+            }
 
             saveUsersToPhonebook();
         } catch (JsonSyntaxException | IllegalStateException e) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid JSON data");
         }
+    }
+
+    private User findUserByName(String userName) {
+        for (User user : users) {
+            if (user.getName().equals(userName)) {
+                return user;
+            }
+        }
+        return null;
     }
 
 
@@ -78,23 +95,14 @@ public class PhonebookServlet extends HttpServlet {
 
             try (Writer writer = new FileWriter(file)) {
                 for (User user : users) {
-                    writer.write(user.getName() + "," + user.getPhoneNumber() + "\n");
+                    for (String phoneNumber : user.getPhoneNumbers()) {
+                        writer.write(user.getName() + "," + phoneNumber + "\n");
+                    }
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private String formatParams(HttpServletRequest req) {
-        return req.getParameterMap()
-                .entrySet()
-                .stream()
-                .map(entry -> {
-                    String param = String.join(" and ", entry.getValue());
-                    return entry.getKey() + " => " + param;
-                })
-                .collect(Collectors.joining("\n"));
     }
 
     private List<User> loadUsersFromPhonebook() {
@@ -112,7 +120,17 @@ public class PhonebookServlet extends HttpServlet {
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
                 if (parts.length == 2) {
-                    userList.add(new User(parts[0].trim(), parts[1].trim()));
+                    String userName = parts[0].trim();
+                    String phoneNumber = parts[1].trim();
+
+                    User existingUser = findUserByName(userName);
+                    if (existingUser != null) {
+                        existingUser.addPhoneNumber(phoneNumber);
+                    } else {
+                        User user = new User(userName);
+                        user.addPhoneNumber(phoneNumber);
+                        userList.add(user);
+                    }
                 }
             }
 
@@ -122,6 +140,17 @@ public class PhonebookServlet extends HttpServlet {
         }
 
         return userList;
+    }
+
+    private String formatParams(HttpServletRequest req) {
+        return req.getParameterMap()
+                .entrySet()
+                .stream()
+                .map(entry -> {
+                    String param = String.join(" and ", entry.getValue());
+                    return entry.getKey() + " => " + param;
+                })
+                .collect(Collectors.joining("\n"));
     }
 
 

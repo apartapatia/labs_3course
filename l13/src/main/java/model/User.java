@@ -2,14 +2,21 @@ package model;
 
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 public class User {
 
     private String name;
-    private String phoneNumber;
+    private List<String> phoneNumbers;
 
-    public User(String name, String phoneNumber) {
+    public User(String name) {
         this.name =  name;
-        this.phoneNumber = phoneNumber;
+        this.phoneNumbers = new ArrayList<>();
+    }
+
+    public void addPhoneNumber(String phoneNumber) {
+        phoneNumbers.add(phoneNumber);
     }
 }
