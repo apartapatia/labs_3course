@@ -68,7 +68,9 @@ public class PhonebookServlet extends HttpServlet {
 
             User existingUser = findUserByName(userName);
             if (existingUser != null) {
-                existingUser.addPhoneNumber(userPhoneNumber);
+                if (!existingUser.getPhoneNumbers().contains(userPhoneNumber)) {
+                    existingUser.addPhoneNumber(userPhoneNumber);
+                }
             } else {
                 User newUser = new User(userName);
                 newUser.addPhoneNumber(userPhoneNumber);
@@ -90,7 +92,7 @@ public class PhonebookServlet extends HttpServlet {
     }
 
     private void saveUsersToPhonebook() {
-        Path filePath = Paths.get("/home/meow/Documents/labs_3course/l13/src/main/resources/phonebook.txt");
+        Path filePath = Paths.get("/home/meow/Documents/clone/labs_3course/l13/src/main/resources/phonebook.txt");
         try {
             Files.write(filePath, users.stream()
                     .flatMap(user -> user.getPhoneNumbers().stream()

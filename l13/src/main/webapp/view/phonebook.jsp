@@ -10,79 +10,84 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            background-color: #1f1f1f; /* Dark background */
+            color: #ffffff; /* Light text */
         }
 
         .container {
             max-width: 800px;
-            margin: 0 auto;
             padding: 20px;
-            background-color: #fff;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #2c2c2c; /* Dark container */
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+            margin: 20px auto 0;
         }
 
         .title {
-            font-size: 24px;
+            font-size: 36px;
             font-weight: bold;
             margin-bottom: 20px;
-            color: #333;
+            color: #ffffff; /* White title */
             text-align: center;
             width: 100%;
         }
 
         .user-card {
-            border: 1px solid #ccc;
-            padding: 10px;
+            border: 1px solid #444; /* Lighter border */
+            padding: 15px;
             margin-bottom: 10px;
-            border-radius: 5px;
+            border-radius: 10px;
             text-align: left;
             transition: background-color 0.3s;
         }
 
         .user-card:hover {
-            background-color: #f0f0f0;
+            background-color: #333; /* Darker hover background */
         }
 
         .user-name {
             font-weight: bold;
             font-size: 18px;
+            color: #ffffff; /* White text */
         }
 
         .user-details {
             margin-top: 5px;
-            color: #555;
+            color: #bbbbbb; /* Lighter text */
         }
 
-        /* Стили для ввода данных */
+        /* Styles for input fields */
         label {
             display: block;
             font-weight: bold;
             margin-top: 10px;
+            color: #ffffff; /* White label */
         }
 
         input[type="text"] {
             width: 100%;
-            padding: 8px;
+            padding: 12px;
             margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            border: 1px solid #444; /* Lighter border */
+            border-radius: 10px;
             font-size: 16px;
+            color: #ffffff; /* White text */
+            background-color: #333; /* Darker input background */
         }
 
         button {
-            background-color: #007bff;
-            color: #fff;
-            padding: 10px 20px;
+            background-color: #17a2b8; /* Turquoise button */
+            color: #ffffff; /* White text */
+            padding: 12px 24px;
             border: none;
-            border-radius: 5px;
+            border-radius: 10px;
             font-size: 16px;
             cursor: pointer;
-            margin-top: 10px;
+            margin-top: 20px;
         }
 
         button:hover {
-            background-color: #0056b3;
+            background-color: #138496; /* Darker turquoise on hover */
         }
     </style>
 </head>
@@ -92,7 +97,7 @@
     <div>
         <form id="userForm">
             <label for="userName"></label><input type="text" id="userName" placeholder="Имя пользователя">
-            <label for="userPhoneNumber"></label><input type="text" id="userPhoneNumber" pattern="[0-9+]+" placeholder="Номер телефона">
+            <label for="userPhoneNumber"></label><input type="text" id="userPhoneNumber" pattern="[0-9+]" placeholder="Номер телефона">
             <button type="button" id="addUserButton">Добавить пользователя</button>
         </form>
     </div>
@@ -102,13 +107,14 @@
             const userName = document.getElementById('userName').value;
             const userPhoneNumber = document.getElementById('userPhoneNumber').value;
 
-            if (userName.equals(null)) {
-                alert("Invalid name format. Please entry not null name");
+            const phoneNumberPattern = /^[0-9+]+$/;
+            if (!phoneNumberPattern.test(userPhoneNumber)) {
+                alert("Invalid");
                 return;
             }
-
-            if (!userPhoneNumber.match(/[0-9+]+/)) {
-                alert('Invalid characters in phone number. Please enter only numbers and the plus sign (+).');
+            const usernamePatterns = /\S/g;
+            if (!usernamePatterns.test(userName)) {
+                alert("Invalid")
                 return;
             }
 
