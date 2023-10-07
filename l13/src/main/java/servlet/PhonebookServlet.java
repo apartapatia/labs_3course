@@ -12,10 +12,12 @@ import model.User;
 
 
 import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @WebServlet(urlPatterns = {"/phonebook"})
@@ -63,6 +65,7 @@ public class PhonebookServlet extends HttpServlet {
             String userName = jsonObject.get("name").getAsString();
             String userPhoneNumber = jsonObject.get("phoneNumber").getAsString();
 
+
             User existingUser = findUserByName(userName);
             if (existingUser != null) {
                 existingUser.addPhoneNumber(userPhoneNumber);
@@ -80,27 +83,19 @@ public class PhonebookServlet extends HttpServlet {
     }
 
     private User findUserByName(String userName) {
-        for (User user : users) {
-            if (user.getName().equals(userName)) {
-                return user;
-            }
-        }
-        return null;
+        return users.stream()
+                .filter(user -> user.getName().equals(userName))
+                .findFirst()
+                .orElse(null);
     }
 
-
     private void saveUsersToPhonebook() {
+        Path filePath = Paths.get("/home/meow/Documents/labs_3course/l13/src/main/resources/phonebook.txt");
         try {
-            Path filePath = Paths.get("/home/meow/Documents/labs_3course/l13/src/main/resources/phonebook.txt");
-            File file = filePath.toFile();
-
-            try (Writer writer = new FileWriter(file)) {
-                for (User user : users) {
-                    for (String phoneNumber : user.getPhoneNumbers()) {
-                        writer.write(user.getName() + "," + phoneNumber + "\n");
-                    }
-                }
-            }
+            Files.write(filePath, users.stream()
+                    .flatMap(user -> user.getPhoneNumbers().stream()
+                            .map(phoneNumber -> user.getName() + "," + phoneNumber + "\n"))
+                    .collect(Collectors.toList()));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -117,23 +112,24 @@ public class PhonebookServlet extends HttpServlet {
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                if (parts.length == 2) {
-                    String userName = parts[0].trim();
-                    String phoneNumber = parts[1].trim();
-
-                    User existingUser = findUserByName(userName);
-                    if (existingUser != null) {
-                        existingUser.addPhoneNumber(phoneNumber);
-                    } else {
-                        User user = new User(userName);
-                        user.addPhoneNumber(phoneNumber);
-                        userList.add(user);
-                    }
-                }
-            }
+            userList = reader.lines()
+                    .map(line -> line.split(","))
+                    .filter(parts -> parts.length == 2)
+                    .map(parts -> {
+                        String userName = parts[0].trim();
+                        String phoneNumber = parts[1].trim();
+                        User existingUser = findUserByName(userName);
+                        if (existingUser != null) {
+                            existingUser.addPhoneNumber(phoneNumber);
+                        } else {
+                            User user = new User(userName);
+                            user.addPhoneNumber(phoneNumber);
+                            return user;
+                        }
+                        return null;
+                    })
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
 
             reader.close();
         } catch (IOException e) {

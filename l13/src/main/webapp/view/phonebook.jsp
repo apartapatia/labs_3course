@@ -92,7 +92,7 @@
     <div>
         <form id="userForm">
             <label for="userName"></label><input type="text" id="userName" placeholder="Имя пользователя">
-            <label for="userPhoneNumber"></label><input type="text" id="userPhoneNumber" placeholder="Номер телефона">
+            <label for="userPhoneNumber"></label><input type="text" id="userPhoneNumber" pattern="[0-9+]+" placeholder="Номер телефона">
             <button type="button" id="addUserButton">Добавить пользователя</button>
         </form>
     </div>
@@ -101,6 +101,17 @@
         document.getElementById('addUserButton').addEventListener('click', function () {
             const userName = document.getElementById('userName').value;
             const userPhoneNumber = document.getElementById('userPhoneNumber').value;
+
+            if (userName.equals(null)) {
+                alert("Invalid name format. Please entry not null name");
+                return;
+            }
+
+            if (!userPhoneNumber.match(/[0-9+]+/)) {
+                alert('Invalid characters in phone number. Please enter only numbers and the plus sign (+).');
+                return;
+            }
+
             const data = {
                 name: userName,
                 phoneNumber: userPhoneNumber
