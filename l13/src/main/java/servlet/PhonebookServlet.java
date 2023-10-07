@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-@WebServlet(urlPatterns = {"/phonebook"})
+@WebServlet(urlPatterns = {"/phonebook" , "/phonebook/add"})
 public class PhonebookServlet extends HttpServlet {
 
     List<User> users;

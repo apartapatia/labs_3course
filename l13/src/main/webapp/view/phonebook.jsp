@@ -139,7 +139,8 @@
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
                     }
-                    location.reload();
+                    //location.reload();
+                    window.location.href = 'http://localhost:8080/l13/phonebook/add';
                 })
                 .catch(error => console.error('Error:', error));
         });
