@@ -112,7 +112,7 @@
             const userName = document.getElementById('userName').value;
             const userPhoneNumber = document.getElementById('userPhoneNumber').value;
 
-            const phoneNumberPattern = /^[0-9+]+$/;
+            const phoneNumberPattern = /^[0-9+-]+$/;
             if (!phoneNumberPattern.test(userPhoneNumber)) {
                 alert("Invalid phone number!");
                 return;
