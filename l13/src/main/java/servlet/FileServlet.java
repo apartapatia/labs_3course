@@ -1,5 +1,6 @@
 package servlet;
 
+import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -16,8 +17,25 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @WebServlet(urlPatterns = {"/file"})
-@MultipartConfig(location = "/home/meow/Documents/labs_3course/l13")
+//@MultipartConfig(location = "/home/meow/Documents/labs_3course/l13")
 public class FileServlet extends HttpServlet {
+
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+    }
+
+    @Override
+    public void destroy() {
+
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        super.doGet(req, resp);
+    }
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         for (Part part : req.getParts()) {

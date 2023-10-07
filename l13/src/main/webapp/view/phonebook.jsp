@@ -80,7 +80,7 @@
         }
 
         button {
-            background-color: #17a2b8;
+            background-color: #228e5d;
             color: #ffffff;
             padding: 12px 24px;
             border: none;
@@ -91,7 +91,7 @@
         }
 
         button:hover {
-            background-color: #138496;
+            background-color: #1a724a;
         }
     </style>
 </head>
@@ -114,12 +114,12 @@
 
             const phoneNumberPattern = /^[0-9+]+$/;
             if (!phoneNumberPattern.test(userPhoneNumber)) {
-                alert("Invalid");
+                alert("Invalid phone number!");
                 return;
             }
             const usernamePatterns = /\S/g;
             if (!usernamePatterns.test(userName)) {
-                alert("Invalid")
+                alert("Invalid name value! Please enter non null value")
                 return;
             }
 

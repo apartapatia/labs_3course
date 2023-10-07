@@ -44,9 +44,6 @@ public class PhonebookServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String URI = req.getRequestURI();
-        String params = formatParams(req);
-        resp.getWriter().write("Method doGet\nURI: " + URI + "\nParams:\n" + params + "\n");
         req.setAttribute("users", users);
         getServletContext().getRequestDispatcher("/view/phonebook.jsp").forward(req, resp);
     }
@@ -140,17 +137,4 @@ public class PhonebookServlet extends HttpServlet {
 
         return userList;
     }
-
-    private String formatParams(HttpServletRequest req) {
-        return req.getParameterMap()
-                .entrySet()
-                .stream()
-                .map(entry -> {
-                    String param = String.join(" and ", entry.getValue());
-                    return entry.getKey() + " => " + param;
-                })
-                .collect(Collectors.joining("\n"));
-    }
-
-
 }
