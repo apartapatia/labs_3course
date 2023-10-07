@@ -10,14 +10,14 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #1f1f1f; /* Dark background */
-            color: #ffffff; /* Light text */
+            background-color: #1f1f1f;
+            color: #ffffff;
         }
 
         .container {
             max-width: 800px;
             padding: 20px;
-            background-color: #2c2c2c; /* Dark container */
+            background-color: #2c2c2c;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
             margin: 20px auto 0;
@@ -27,13 +27,18 @@
             font-size: 36px;
             font-weight: bold;
             margin-bottom: 20px;
-            color: #ffffff; /* White title */
+            color: #ffffff;
             text-align: center;
             width: 100%;
         }
 
+        /*.light-theme {*/
+        /*    background-color: #ffffff;*/
+        /*    color: #000000;*/
+        /*}*/
+
         .user-card {
-            border: 1px solid #444; /* Lighter border */
+            border: 1px solid #444;
             padding: 15px;
             margin-bottom: 10px;
             border-radius: 10px;
@@ -42,42 +47,41 @@
         }
 
         .user-card:hover {
-            background-color: #333; /* Darker hover background */
+            background-color: #333;
         }
 
         .user-name {
             font-weight: bold;
             font-size: 18px;
-            color: #ffffff; /* White text */
+            color: #ffffff;
         }
 
         .user-details {
             margin-top: 5px;
-            color: #bbbbbb; /* Lighter text */
+            color: #bbbbbb;
         }
 
-        /* Styles for input fields */
         label {
             display: block;
             font-weight: bold;
             margin-top: 10px;
-            color: #ffffff; /* White label */
+            color: #ffffff;
         }
 
         input[type="text"] {
             width: 100%;
             padding: 12px;
             margin-top: 5px;
-            border: 1px solid #444; /* Lighter border */
+            border: 1px solid #444;
             border-radius: 10px;
             font-size: 16px;
-            color: #ffffff; /* White text */
-            background-color: #333; /* Darker input background */
+            color: #ffffff;
+            background-color: #333;
         }
 
         button {
-            background-color: #17a2b8; /* Turquoise button */
-            color: #ffffff; /* White text */
+            background-color: #17a2b8;
+            color: #ffffff;
             padding: 12px 24px;
             border: none;
             border-radius: 10px;
@@ -87,7 +91,7 @@
         }
 
         button:hover {
-            background-color: #138496; /* Darker turquoise on hover */
+            background-color: #138496;
         }
     </style>
 </head>
@@ -97,7 +101,8 @@
     <div>
         <form id="userForm">
             <label for="userName"></label><input type="text" id="userName" placeholder="Имя пользователя">
-            <label for="userPhoneNumber"></label><input type="text" id="userPhoneNumber" pattern="[0-9+]" placeholder="Номер телефона">
+            <label for="userPhoneNumber"></label><input type="text" id="userPhoneNumber" pattern="[0-9+]"
+                                                        placeholder="Номер телефона">
             <button type="button" id="addUserButton">Добавить пользователя</button>
         </form>
     </div>
@@ -162,7 +167,8 @@
                 List<String> phoneNumbers = entry.getValue();
         %>
         <div class="user-card">
-            <div class="user-name"><%= userName %></div>
+            <div class="user-name"><%= userName %>
+            </div>
             <div class="user-details">
                 <strong>Phone Numbers:</strong> <%= String.join(", ", phoneNumbers) %>
             </div>
@@ -172,5 +178,15 @@
         %>
     </div>
 </div>
+<%--/% переключение темы %/--%>
+<%--<button id="toggleThemeButton">Переключить тему</button>]--%>
+<%--<script>--%>
+<%--    const toggleThemeButton = document.getElementById('toggleThemeButton');--%>
+<%--    const body = document.body;--%>
+
+<%--    toggleThemeButton.addEventListener('click', function () {--%>
+<%--        body.classList.toggle('light-theme');--%>
+<%--    });--%>
+<%--</script> --%>
 </body>
 </html>

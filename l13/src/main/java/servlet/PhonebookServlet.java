@@ -52,7 +52,7 @@ public class PhonebookServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         BufferedReader reader = req.getReader();
         StringBuilder requestBody = new StringBuilder();
         String line;
@@ -99,7 +99,7 @@ public class PhonebookServlet extends HttpServlet {
                             .map(phoneNumber -> user.getName() + "," + phoneNumber + "\n"))
                     .collect(Collectors.toList()));
         } catch (IOException e) {
-            e.printStackTrace();
+            log(e.getMessage());
         }
     }
 
@@ -135,7 +135,7 @@ public class PhonebookServlet extends HttpServlet {
 
             reader.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            log(e.getMessage());
         }
 
         return userList;
