@@ -98,14 +98,12 @@ public class PhonebookServlet extends HttpServlet {
 
                 if (userOptional.isPresent()) {
                     User user = userOptional.get();
-
                     if (!userPhoneNumber.isEmpty()) {
                         boolean phoneNumberRemoved = user.getPhoneNumbers().remove(userPhoneNumber);
                         if (!phoneNumberRemoved) {
                             resp.sendError(HttpServletResponse.SC_NOT_FOUND, "User with specified phoneNumber not found.");
                             return;
                         }
-
                         if (user.getPhoneNumbers().isEmpty()) {
                             users.remove(user);
                         }
@@ -117,13 +115,11 @@ public class PhonebookServlet extends HttpServlet {
                 } else {
                     resp.sendError(HttpServletResponse.SC_NOT_FOUND, "User with specified name not found.");
                 }
-
             } catch (JsonSyntaxException | IllegalStateException e) {
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid JSON data");
             }
         }
     }
-
 
     private User findUserByName(String userName) {
         return users.stream()
