@@ -1,7 +1,6 @@
 <%@ page import="model.User" %>
-<%@ page import="java.io.PrintWriter" %>
 <%@ page import="java.util.*" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
     <title>Phonebook</title>
@@ -96,55 +95,82 @@
     </style>
 </head>
 <body>
-<div class="container">
-    <div class="title">Телефонная книга</div>
-    <div>
-        <form id="userForm">
-            <label for="userName"></label><input type="text" id="userName" placeholder="Имя пользователя">
-            <label for="userPhoneNumber"></label><input type="text" id="userPhoneNumber" pattern="[0-9+]"
-                                                        placeholder="Номер телефона">
-            <button type="button" id="addUserButton">Добавить пользователя</button>
-        </form>
-    </div>
-    <hr>
-    <script>
-        document.getElementById('addUserButton').addEventListener('click', function () {
-            const userName = document.getElementById('userName').value;
-            const userPhoneNumber = document.getElementById('userPhoneNumber').value;
+    <div class="container">
+        <div class="title">Телефонная книга</div>
+        <div>
+            <form id="userForm">
+                <label for="userName"></label><input type="text" id="userName" placeholder="Имя пользователя">
+                <label for="userPhoneNumber"></label><input type="text" id="userPhoneNumber" pattern="[0-9+]"
+                                                            placeholder="Номер телефона">
+                <button type="button" id="addUserButton">Добавить пользователя</button>
+                <label for="userNameDelete"></label><input type="text" id="userNameDelete" placeholder="Имя пользователя">
+                <label for="userPhoneDelete"></label><input type="text" id="userPhoneDelete" placeholder="Телефон пользователя">
+                <button type="button" id="deletePhone">Удалить пользователя</button>
+            </form>
+        </div>
+        <hr>
+        <script>
+            document.getElementById('addUserButton').addEventListener('click', function () {
+                const userName = document.getElementById('userName').value;
+                const userPhoneNumber = document.getElementById('userPhoneNumber').value;
 
-            const phoneNumberPattern = /^[0-9+-]+$/;
-            if (!phoneNumberPattern.test(userPhoneNumber)) {
-                alert("Invalid phone number!");
-                return;
-            }
-            const usernamePatterns = /\S/g;
-            if (!usernamePatterns.test(userName)) {
-                alert("Invalid name value! Please enter non null value")
-                return;
-            }
+                const phoneNumberPattern = /^[0-9+-]+$/;
+                if (!phoneNumberPattern.test(userPhoneNumber)) {
+                    alert("Invalid phone number!");
+                    return;
+                }
+                const usernamePatterns = /\S/g;
+                if (!usernamePatterns.test(userName)) {
+                    alert("Invalid name value! Please enter non null value")
+                    return;
+                }
 
-            const data = {
-                name: userName,
-                phoneNumber: userPhoneNumber
-            };
+                const data = {
+                    name: userName,
+                    phoneNumber: userPhoneNumber
+                };
 
-            fetch('http://localhost:8080/l13/phonebook', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    //location.reload();
-                    window.location.href = 'http://localhost:8080/l13/phonebook/add';
+                fetch('http://localhost:8080/l13/phonebook', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
                 })
-                .catch(error => console.error('Error:', error));
-        });
-    </script>
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        //location.reload();
+                        window.location.href = 'http://localhost:8080/l13/phonebook/add';
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+            document.getElementById('deletePhone').addEventListener('click', function () {
+                const userName = document.getElementById('userNameDelete').value;
+                const userPhoneNumber = document.getElementById('userPhoneDelete').value;
+
+                const data = {
+                    name: userName,
+                    phoneNumber: userPhoneNumber
+                };
+
+                fetch('http://localhost:8080/l13/phonebook', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        window.location.href = 'http://localhost:8080/l13/phonebook/delete';
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        </script>
     <div class="user-list">
         <%
             var users = (List<User>) request.getAttribute("users");
