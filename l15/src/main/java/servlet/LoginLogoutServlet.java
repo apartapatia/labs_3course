@@ -38,6 +38,7 @@ public class LoginLogoutServlet extends HttpServlet {
         }
 
         servletHelper.sendJsonResponse(resp, responseJson);
+        log.info("Login request received for username: {}", username);
     }
 
     @SneakyThrows
@@ -46,17 +47,17 @@ public class LoginLogoutServlet extends HttpServlet {
         HttpSession session = req.getSession();
         JSONObject responseJson = new JSONObject();
 
-        if (servletHelper.isUserAuthenticated(session)) {
-            servletHelper.forwardToJSP(req, resp, "/view/login.jsp");
-            String username = (String) session.getAttribute("username");
-            log.info(username);
+        String savedUsername = (String) session.getAttribute("username");
+
+        if (savedUsername != null) {
             responseJson.put("success", true);
-            responseJson.put("username", username);
+            responseJson.put("username", savedUsername);
         } else {
             servletHelper.forwardToJSP(req, resp, "/view/login.jsp");
         }
 
         servletHelper.sendJsonResponse(resp, responseJson);
+        log.info("GET request received for username: {}", responseJson.optString("username"));
     }
 
     @SneakyThrows
@@ -66,5 +67,6 @@ public class LoginLogoutServlet extends HttpServlet {
         JSONObject responseJson = new JSONObject();
         responseJson.put("success", true);
         servletHelper.sendJsonResponse(resp, responseJson);
+        log.info("Logout request received");
     }
 }
