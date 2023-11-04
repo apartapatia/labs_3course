@@ -40,6 +40,6 @@ public class AdvertisementsServlet extends HttpServlet {
             }
         }
 
-        resp.sendRedirect(req.getContextPath() + "/advertisements");
+        resp.sendRedirect(req.getContextPath() + "/main");
     }
 }

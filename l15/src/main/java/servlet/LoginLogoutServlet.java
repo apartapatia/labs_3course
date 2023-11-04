@@ -67,5 +67,4 @@ public class LoginLogoutServlet extends HttpServlet {
         responseJson.put("success", true);
         servletHelper.sendJsonResponse(resp, responseJson);
     }
-
 }

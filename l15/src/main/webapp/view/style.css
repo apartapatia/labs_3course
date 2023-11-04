@@ -1,36 +1,45 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
+    background-color: #1f1f2e; /* Темно-синий цвет фона */
+    background-image: url('../static/anon.jpg');
     margin: 0;
     padding: 0;
 }
 
 h1 {
     text-align: center;
-    color: #333;
+    color: #ff9900; /* Оранжевый цвет для заголовков */
+    transition: color 0.3s; /* Анимация цвета при наведении */
 }
 
 a {
     text-decoration: none;
+    color: #ff9900; /* Оранжевый цвет для ссылок */
+    transition: color 0.3s; /* Анимация цвета при наведении */
+}
+
+a:hover {
+    color: #ffffff; /* Белый цвет при наведении на ссылку */
 }
 
 button {
-    background-color: #007bff;
-    color: #fff;
+    background-color: #ff9900; /* Оранжевый цвет для кнопок */
+    color: #1f1f2e; /* Темно-синий цвет текста на кнопках */
     border: none;
     padding: 10px 20px;
     margin: 10px;
     cursor: pointer;
+    transition: background-color 0.3s; /* Анимация цвета фона при наведении */
 }
 
 button:hover {
-    background-color: #0056b3;
+    background-color: #ff6600; /* Оранжевый цвет фона при наведении на кнопку */
 }
 
 form {
     max-width: 400px;
     margin: 0 auto;
-    background-color: #fff;
+    background-color: #1f1f2e; /* Темно-синий цвет фона формы */
     padding: 20px;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
@@ -40,6 +49,7 @@ label {
     display: block;
     font-weight: bold;
     margin-top: 10px;
+    color: #ff9900; /* Оранжевый цвет для текста меток */
 }
 
 input[type="text"],
@@ -47,26 +57,27 @@ textarea {
     width: 100%;
     padding: 10px;
     margin: 5px 0;
-    border: 1px solid #ccc;
+    border: 1px solid #ff9900; /* Оранжевая граница для текстовых полей */
     border-radius: 4px;
 }
 
 input[type="submit"] {
-    background-color: #007bff;
-    color: #fff;
+    background-color: #ff9900; /* Оранжевый цвет для кнопки отправки формы */
+    color: #1f1f2e; /* Темно-синий цвет текста на кнопке отправки */
     border: none;
     padding: 10px 20px;
     margin-top: 10px;
     cursor: pointer;
+    transition: background-color 0.3s; /* Анимация цвета фона при наведении */
 }
 
 input[type="submit"]:hover {
-    background-color: #0056b3;
+    background-color: #ff6600; /* Оранжевый цвет фона при наведении на кнопку отправки */
 }
 
 p {
     text-align: center;
-    color: #333;
+    color: #ff9900; /* Оранжевый цвет текста абзацев */
 }
 
 ul {
@@ -75,12 +86,19 @@ ul {
 }
 
 li {
-    background-color: #fff;
+    background-color: #1f1f2e; /* Темно-синий цвет фона элементов списка */
+    color: #ff9900; /* Оранжевый цвет текста элементов списка */
     padding: 15px;
     margin: 10px 0;
-    border: 1px solid #ccc;
+    border: 1px solid #ff9900; /* Оранжевая граница элементов списка */
     border-radius: 5px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s, color 0.3s; /* Анимация цветов при наведении */
+}
+
+li:hover {
+    background-color: #ff9900; /* Оранжевый цвет фона при наведении на элемент списка */
+    color: #1f1f2e; /* Темно-синий цвет текста при наведении на элемент списка */
 }
 
 strong {

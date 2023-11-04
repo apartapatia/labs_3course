@@ -12,7 +12,7 @@
 <%
     String username = (String) request.getAttribute("username");
 %>
-<h1>Доска объявлений</h1>
+<h1>Доска объявлений ϟ</h1>
 <% if (username != null) { %>
 <form method="post">
     <label for="title">Заголовок объявления:</label>

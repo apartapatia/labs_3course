@@ -7,8 +7,8 @@
     <title>Войти в личный кабинет</title>
 </head>
 <body>
-<h1>Добро пожаловать!</h1>
-<div id="message"></div>
+<h1>Добро пожаловать! ϟ </h1>
+<div id="message" style="display: none;"></div>
 <div id="userPanel" style="display: none;">
     <p>Привет, <span id="welcomeUsername"></span>!</p>
     <button type="button" id="logoutButton">Выйти</button>
@@ -21,19 +21,17 @@
         <label for="password">Пароль:</label>
         <input type="password" id="password" name="password"><br>
         <button type="button" id="loginButton">Войти</button>
-        <a href="${pageContext.request.contextPath}"><button type="button" id="backtwoButton">Вернуться на главную</button></a>
+        <a href="main"><button type="button" id="backtwoButton">Вернуться на главную</button></a>
     </form>
 </div>
 
 <script>
     function displayUserInfo(username) {
-        const messageElement = document.getElementById('message');
         const loginForm = document.getElementById('loginForm');
         const userPanel = document.getElementById('userPanel');
         const welcomeUsername = document.getElementById('welcomeUsername');
         const logoutButton = document.getElementById('logoutButton');
 
-        messageElement.innerHTML = "Добро пожаловать, " + username + "!";
         loginForm.style.display = 'none';
         userPanel.style.display = 'block';
         welcomeUsername.textContent = username;
@@ -45,10 +43,10 @@
             displayUserInfo(responseData.username);
             localStorage.setItem("username", responseData.username);
         } else {
-            document.getElementById('message').innerHTML = "Пользователь не вошел в систему";
         }
     }
-    var savedUsername = localStorage.getItem("username");
+
+    const savedUsername = localStorage.getItem("username");
     if (savedUsername) {
         displayUserInfo(savedUsername);
     }
@@ -81,6 +79,7 @@
             .then(response => {
                 localStorage.removeItem("username");
                 document.getElementById('message').innerHTML = "Вы успешно вышли";
+                document.getElementById('message').style.display = 'block';
                 document.getElementById('loginForm').style.display = 'block';
                 document.getElementById('userPanel').style.display = 'none';
                 document.getElementById('username').value = "";
