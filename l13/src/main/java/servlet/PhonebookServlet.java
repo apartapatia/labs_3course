@@ -1,6 +1,5 @@
 package servlet;
 
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import jakarta.servlet.ServletException;
@@ -42,22 +41,26 @@ public class PhonebookServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        try (BufferedReader reader = req.getReader()) {
-            StringBuilder requestBody = new StringBuilder();
+        try (var reader = req.getReader()) {
+            var requestBody = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
                 requestBody.append(line);
             }
 
             try {
-                JsonObject jsonObject = JsonParser.parseString(requestBody.toString()).getAsJsonObject();
+                var jsonObject = JsonParser.parseString(requestBody.toString()).getAsJsonObject();
                 String userName = jsonObject.get("name").getAsString();
                 String userPhoneNumber = jsonObject.get("phoneNumber").getAsString();
 
-                User existingUser = findUserByName(userName);
-                if (existingUser != null) {
-                    if (!existingUser.getPhoneNumbers().contains(userPhoneNumber)) {
-                        existingUser.addPhoneNumber(userPhoneNumber);
+                Optional<User> optionalUser = users.stream()
+                        .filter(user -> user.getName().equals(userName))
+                        .findFirst();
+
+                if (optionalUser.isPresent()) {
+                    User user = optionalUser.get();
+                    if (!user.getPhoneNumbers().contains(userPhoneNumber)) {
+                        user.addPhoneNumber(userPhoneNumber);
                     }
                 } else {
                     User newUser = new User(userName);
@@ -74,16 +77,16 @@ public class PhonebookServlet extends HttpServlet {
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try (BufferedReader reader = req.getReader()) {
-            StringBuilder requestBody = new StringBuilder();
+            var requestBody = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
                 requestBody.append(line);
             }
 
             try {
-                JsonObject jsonObject = JsonParser.parseString(requestBody.toString()).getAsJsonObject();
+                var jsonObject = JsonParser.parseString(requestBody.toString()).getAsJsonObject();
                 String userName = jsonObject.get("name").getAsString();
                 String userPhoneNumber = jsonObject.get("phoneNumber").getAsString();
 
@@ -148,7 +151,7 @@ public class PhonebookServlet extends HttpServlet {
                 throw new FileNotFoundException("phonebook.txt not found in resources.");
             }
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            var reader = new BufferedReader(new InputStreamReader(inputStream));
 
             userList = reader.lines()
                     .map(line -> line.split(","))
