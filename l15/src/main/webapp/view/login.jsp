@@ -1,8 +1,8 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; ISO-8859-1; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" type="text/css" href="style.css" />
+    <link type="text/css" rel="stylesheet" href="./view/style.css">
     <meta charset="UTF-8">
     <title>Войти в личный кабинет</title>
 </head>
@@ -12,7 +12,7 @@
 <div id="userPanel" style="display: none;">
     <p>Привет, <span id="welcomeUsername"></span>!</p>
     <button type="button" id="logoutButton">Выйти</button>
-    <a href="${pageContext.request.contextPath}"><button type="button" id="backButton">Вернуться на главную</button></a>
+    <a href="main"><button type="button" id="backButton">Вернуться на главную</button></a>
 </div>
 <div id="loginPanel">
     <form id="loginForm">

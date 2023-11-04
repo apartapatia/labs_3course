@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-@WebServlet(urlPatterns = "/")
+@WebServlet(urlPatterns = "/main")
 public class AdvertisementsServlet extends HttpServlet {
     private final List<AdvertisementsModel> advertisements = new ArrayList<>();
 

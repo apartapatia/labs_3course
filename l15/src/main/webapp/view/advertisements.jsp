@@ -5,7 +5,7 @@
 <html>
 <head>
     <title>Доска объявлений</title>
-    <link rel="stylesheet" type="text/html" href="style.css">
+    <link type="text/css" rel="stylesheet" href="./view/style.css">
 </head>
 <body>
 <a href="login"><button>Личный кабинет</button></a>
