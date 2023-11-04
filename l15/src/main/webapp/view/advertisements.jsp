@@ -41,5 +41,8 @@
         }
     %>
 </ul>
+<h1>
+    <div class="image-container"></div>
+</h1>
 </body>
 </html>

@@ -24,7 +24,6 @@
         <a href="main"><button type="button" id="backtwoButton">Вернуться на главную</button></a>
     </form>
 </div>
-
 <script>
     function displayUserInfo(username) {
         const loginForm = document.getElementById('loginForm');
@@ -78,7 +77,6 @@
         })
             .then(response => {
                 localStorage.removeItem("username");
-                document.getElementById('message').innerHTML = "Вы успешно вышли";
                 document.getElementById('message').style.display = 'block';
                 document.getElementById('loginForm').style.display = 'block';
                 document.getElementById('userPanel').style.display = 'none';

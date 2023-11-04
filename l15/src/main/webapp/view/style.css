@@ -1,11 +1,18 @@
 body {
     font-family: Arial, sans-serif;
     background-color: #1f1f2e; /* Темно-синий цвет фона */
-    background-image: url('../static/anon.jpg');
     margin: 0;
     padding: 0;
 }
-
+.image-container {
+    background-image: url('../static/anon.jpg');
+    width: 900px; /* Ширина квадрата */
+    height: 900px; /* Высота квадрата */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    /*border: 2px solid #ff9900; !* Оранжевая граница квадрата *!*/
+}
 h1 {
     text-align: center;
     color: #ff9900; /* Оранжевый цвет для заголовков */
