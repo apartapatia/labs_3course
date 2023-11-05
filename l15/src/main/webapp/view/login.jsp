@@ -42,6 +42,7 @@
             displayUserInfo(responseData.username);
             localStorage.setItem("username", responseData.username);
         } else {
+            alert("incorrect login or password")
         }
     }
 

@@ -49,7 +49,7 @@ public class LoginLogoutServlet extends HttpServlet {
 
         String savedUsername = (String) session.getAttribute("username");
 
-        if (savedUsername != null) {
+        if (servletHelper.isUserAuthenticated(session)) {
             responseJson.put("success", true);
             responseJson.put("username", savedUsername);
             servletHelper.forwardToJSP(req, resp, "/view/login.jsp");
