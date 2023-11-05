@@ -52,6 +52,7 @@ public class LoginLogoutServlet extends HttpServlet {
         if (savedUsername != null) {
             responseJson.put("success", true);
             responseJson.put("username", savedUsername);
+            servletHelper.forwardToJSP(req, resp, "/view/login.jsp");
         } else {
             servletHelper.forwardToJSP(req, resp, "/view/login.jsp");
         }

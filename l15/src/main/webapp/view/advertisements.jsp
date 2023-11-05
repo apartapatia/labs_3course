@@ -5,7 +5,7 @@
 <html>
 <head>
     <title>Доска объявлений</title>
-    <link type="text/css" rel="stylesheet" href="./view/style.css">
+    <link type="text/css" rel="stylesheet" href="./view/style_two.css">
 </head>
 <body>
 <a href="login"><button>Личный кабинет</button></a>
@@ -41,8 +41,9 @@
         }
     %>
 </ul>
-<h1>
+<div class="centered-content">
     <div class="image-container"></div>
-</h1>
+</div>
 </body>
 </html>
+
