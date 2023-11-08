@@ -48,16 +48,32 @@
 
     const savedUsername = localStorage.getItem("username");
     if (savedUsername) {
+        const savedUsername = localStorage.getItem("username");
+        if (savedUsername) {
+            fetch(`login?localStorageUsername=${savedUsername}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    checkSuccess(data);
+                });
+
+            displayUserInfo(savedUsername);
+        }
+
         displayUserInfo(savedUsername);
     }
-
     document.getElementById('loginButton').addEventListener('click', function() {
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
-
+        const savedUsername = localStorage.getItem("username");
         const data = {
             username: username,
-            password: password
+            password: password,
+            localStorageUsername: savedUsername
         };
 
         fetch('login', {
