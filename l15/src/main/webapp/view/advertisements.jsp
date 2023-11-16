@@ -5,10 +5,12 @@
 <html>
 <head>
     <title>Доска объявлений</title>
-    <link type="text/css" rel="stylesheet" href="./view/style_two.css">
+    <link type="text/css" rel="stylesheet" href="./view/style.css">
 </head>
 <body>
-<a href="login"><button>Личный кабинет</button></a>
+<a href="login">
+    <button>Личный кабинет</button>
+</a>
 <%
     String username = (String) request.getAttribute("username");
 %>
@@ -31,10 +33,13 @@
             for (AdvertisementsModel advertisement : advertisements) {
     %>
     <li>
-        <strong><%= advertisement.getTitle() %></strong><br>
+        <strong><%= advertisement.getTitle() %>
+        </strong><br>
         <%= advertisement.getText() %><br>
-        <i>Автор: <%= advertisement.getUsername() %></i><br>
-        <i>Дата: <%= advertisement.getDate() %></i>
+        <i>Автор: <%= advertisement.getUsername() %>
+        </i><br>
+        <i>Дата: <%= advertisement.getDate() %>
+        </i>
     </li>
     <%
             }

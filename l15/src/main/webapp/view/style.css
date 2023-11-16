@@ -1,59 +1,60 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #15202b; /* Темно-синий цвет фона */
+    background-color: #15202b;
     margin: 0;
     padding: 0;
 }
+
 .centered-content {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh; /* Высота экрана */
+    min-height: 100vh;
 }
+
 .image-container {
     background-image: url('../static/anon.jpg');
-    width: 900px; /* Ширина квадрата */
-    height: 900px; /* Высота квадрата */
-    background-size: contain;
+    width: 900px;
+    height: 900px;
+    background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
-    /*border: 2px solid #ff9900; !* Оранжевая граница квадрата *!*/
 }
 
 h1 {
     text-align: center;
-    color: #ff9900; /* Оранжевый цвет для заголовков */
-    transition: color 0.3s; /* Анимация цвета при наведении */
+    color: #ff9900;
+    font-size: 28px;
+    margin-top: 20px;
 }
 
 a {
     text-decoration: none;
-    color: #ff9900; /* Оранжевый цвет для ссылок */
-    transition: color 0.3s; /* Анимация цвета при наведении */
+    color: #ff9900;
 }
 
 a:hover {
-    color: #ffffff; /* Белый цвет при наведении на ссылку */
+    color: #ffffff;
 }
 
 button {
-    background-color: #ff9900; /* Оранжевый цвет для кнопок */
-    color: #15202b; /* Темно-синий цвет текста на кнопках */
+    background-color: #ff9900;
+    color: #15202b;
     border: none;
     padding: 10px 20px;
     margin: 10px;
     cursor: pointer;
-    transition: background-color 0.3s; /* Анимация цвета фона при наведении */
+    border-radius: 5px;
 }
 
 button:hover {
-    background-color: #ff6600; /* Оранжевый цвет фона при наведении на кнопку */
+    background-color: #ff6600;
 }
 
 form {
     max-width: 400px;
     margin: 0 auto;
-    background-color: #15202b; /* Темно-синий цвет фона формы */
+    background-color: #15202b;
     padding: 20px;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
@@ -63,7 +64,7 @@ label {
     display: block;
     font-weight: bold;
     margin-top: 10px;
-    color: #ff9900; /* Оранжевый цвет для текста меток */
+    color: #ff9900;
 }
 
 input[type="text"],
@@ -71,27 +72,27 @@ textarea {
     width: 100%;
     padding: 10px;
     margin: 5px 0;
-    border: 1px solid #ff9900; /* Оранжевая граница для текстовых полей */
+    border: 1px solid #ff9900;
     border-radius: 4px;
 }
 
 input[type="submit"] {
-    background-color: #ff9900; /* Оранжевый цвет для кнопки отправки формы */
-    color: #15202b; /* Темно-синий цвет текста на кнопке отправки */
+    background-color: #ff9900;
+    color: #15202b;
     border: none;
     padding: 10px 20px;
     margin-top: 10px;
     cursor: pointer;
-    transition: background-color 0.3s; /* Анимация цвета фона при наведении */
+    border-radius: 5px;
 }
 
 input[type="submit"]:hover {
-    background-color: #ff6600; /* Оранжевый цвет фона при наведении на кнопку отправки */
+    background-color: #ff6600;
 }
 
 p {
     text-align: center;
-    color: #ff9900; /* Оранжевый цвет текста абзацев */
+    color: #ff9900;
 }
 
 ul {
@@ -100,19 +101,19 @@ ul {
 }
 
 li {
-    background-color: #15202b; /* Темно-синий цвет фона элементов списка */
-    color: #ccc; /* Оранжевый цвет текста элементов списка */
+    background-color: #15202b;
+    color: #ccc;
     padding: 15px;
     margin: 10px 0;
-    border: 1px solid #ff9900; /* Оранжевая граница элементов списка */
+    border: 1px solid #ff9900;
     border-radius: 5px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    transition: background-color 0.3s, color 0.3s; /* Анимация цветов при наведении */
+    transition: background-color 0.3s, color 0.3s;
 }
 
 li:hover {
-    background-color: #ff9900; /* Оранжевый цвет фона при наведении на элемент списка */
-    color: #15202b; /* Темно-синий цвет текста при наведении на элемент списка */
+    background-color: #ff9900;
+    color: #15202b;
 }
 
 strong {

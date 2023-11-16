@@ -46,6 +46,11 @@ public class LoginLogoutServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         HttpSession session = req.getSession();
         JSONObject responseJson = new JSONObject();
+        String localStorageUsername = req.getParameter("localStorageUsername");
+
+        if (localStorageUsername != null) {
+            session.setAttribute("username", localStorageUsername);
+        }
 
         String savedUsername = (String) session.getAttribute("username");
 
