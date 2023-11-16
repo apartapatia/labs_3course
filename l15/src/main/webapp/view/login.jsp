@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link type="text/css" rel="stylesheet" href="./view/style.css">
+    <link type="text/css" rel="stylesheet" href="./view/style_two.css">
     <meta charset="UTF-8">
     <title>Войти в личный кабинет</title>
 </head>
